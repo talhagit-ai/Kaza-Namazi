@@ -391,15 +391,16 @@
     PRAYER_IDS.forEach(function(p){
       var d=state.done[p],t=state.targets[p]; done+=d; tgt+=t;
       var rem=Math.max(0,t-d); if(rem>anyRem) anyRem=rem;
-      var pc=t>0?Math.min(100,d/t*100):100;
-      var nw=$("now-"+p); if(nw) nw.textContent=fmt(d);
+      var pc=t>0?Math.min(100,d/t*100):0;
+      var nw=$("now-"+p); if(nw) nw.textContent=fmt(rem);
       var tg=$("tgt-"+p); if(tg) tg.textContent=fmt(t);
       var fl=$("fill-"+p); if(fl) fl.style.width=pc+"%";
       var note=$("note-"+p),card=$("card-"+p);
       var dec=card.querySelector('[data-act="dec"]'),inc=card.querySelector('[data-act="inc"]'),inc5=card.querySelector('[data-act="inc5"]');
-      if(rem<=0&&t>0){ note.innerHTML=T.completed; note.className="left-note complete"; card.classList.add("done"); inc.disabled=true; inc5.disabled=true; }
-      else{ note.innerHTML=tpl(T.remaining,{n:fmt(rem)}); note.className="left-note"; card.classList.remove("done"); inc.disabled=false; inc5.disabled=false; }
-      dec.disabled=d<=0;
+      inc.disabled=false; inc5.disabled=false;
+      if(rem<=0&&t>0){ note.innerHTML=T.completed; note.className="left-note complete"; card.classList.add("done"); }
+      else{ note.innerHTML=""; note.className="left-note"; card.classList.remove("done"); }
+      dec.disabled=rem<=0;
     });
     var remain=Math.max(0,tgt-done),pct=tgt>0?Math.round(done/tgt*100):0;
     remainBig.textContent=fmt(remain);
@@ -412,8 +413,9 @@
     else{ var days=Math.ceil(anyRem/state.pace); var dd=new Date(); dd.setDate(dd.getDate()+days); etaEl.textContent=tpl(T.etaTpl,{days:fmt(days),day:(days===1?T.dayU.one:T.dayU.other),date:fmtDate(dd)}); }
   }
 
-  function bump(id,n){ var t=state.targets[id]; state.done[id]=Math.max(0,Math.min(t,state.done[id]+n)); render(); scheduleSave(); }
-  cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")bump(id,1); else if(act==="inc5")bump(id,5); else if(act==="dec")bump(id,-1); });
+  function addDebt(id,n){ state.targets[id]=Math.max(0,(state.targets[id]||0)+n); if(state.done[id]>state.targets[id]) state.done[id]=state.targets[id]; syncPeriodFromCounts(); render(); scheduleSave(); }
+  function makeUp(id){ var t=state.targets[id]||0; state.done[id]=Math.min(t,(state.done[id]||0)+1); render(); scheduleSave(); }
+  cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")addDebt(id,1); else if(act==="inc5")addDebt(id,5); else if(act==="dec")makeUp(id); });
   dayBtn.addEventListener("click",function(){ var ch=false; PRAYER_IDS.forEach(function(p){ if(state.done[p]<state.targets[p]){ state.done[p]++; ch=true; } }); if(ch){ render(); scheduleSave(); toast(T.tDayAdded); } });
 
   function renderNotes(){ var ul=$("notesList"); if(!ul) return; ul.innerHTML=""; var arr=(state.notes||[]).slice().sort(function(a,b){return b.t-a.t;}); if(!arr.length){ var le=document.createElement("li"); le.className="notes-empty"; le.textContent=T.notesEmpty; ul.appendChild(le); return; } arr.forEach(function(n){ var li=document.createElement("li"); li.className="note-item"; var bd=document.createElement("div"); bd.className="note-body"; var dt=document.createElement("span"); dt.className="note-date"; dt.textContent=fmtDate(new Date(n.t)); var tx=document.createElement("span"); tx.className="note-text"; tx.textContent=n.x; bd.appendChild(dt); bd.appendChild(tx); var del=document.createElement("button"); del.type="button"; del.className="note-del"; del.setAttribute("data-del",String(n.t)); del.setAttribute("aria-label",T.notesDel||"Delete"); del.textContent="\u00D7"; li.appendChild(bd); li.appendChild(del); ul.appendChild(li); }); }
@@ -427,6 +429,7 @@
 
   function applyPeriod(){ var y=clampN(inYears.value,0,MAX_YEARS),m=clampN(inMonths.value,0,MAX_MONTHS),d=clampN(inDays.value,0,MAX_DAYS); state.years=y; state.months=m; state.days=d; inYears.value=y; inMonths.value=m; inDays.value=d; var tot=periodTotal(y,m,d); PRAYER_IDS.forEach(function(p){ state.targets[p]=tot; if(state.done[p]>tot) state.done[p]=tot; }); render(); scheduleSave(); toast(tpl(T.tYearSet,{period:periodLabel(y,m,d),n:fmt(tot)})); }
   [inYears,inMonths,inDays].forEach(function(el){ if(el) el.addEventListener("change",applyPeriod); });
+  function syncPeriodFromCounts(){ var mx=0,i; for(i=0;i<PRAYER_IDS.length;i++){ var tt=state.targets[PRAYER_IDS[i]]||0; if(tt>mx) mx=tt; } var y=Math.floor(mx/DPY); var r=mx-y*DPY; var m=Math.floor(r/DPM); var dd=Math.round(r-m*DPM); y=clampN(y,0,MAX_YEARS); m=clampN(m,0,MAX_MONTHS); dd=clampN(dd,0,MAX_DAYS); state.years=y; state.months=m; state.days=dd; if(inYears) inYears.value=y; if(inMonths) inMonths.value=m; if(inDays) inDays.value=dd; }
   langSel.addEventListener("change",function(){ var l=langSel.value; if(I18N[l]){ state.lang=l; applyI18n(); scheduleSave(); } });
   var themeBtn=$("themeBtn");
   function applyTheme(){ document.documentElement.setAttribute("data-theme", state.theme==="dark"?"dark":"light"); }
@@ -443,7 +446,7 @@
   var editScrim=$("editScrim");
   $("editBtn").addEventListener("click",function(){ PRAYER_IDS.forEach(function(p){ $("edit-"+p).value=state.targets[p]; }); $("setAllInput").value=""; openSheet(editScrim); });
   $("setAllBtn").addEventListener("click",function(){ var v=parseInt($("setAllInput").value,10); if(isNaN(v)||v<0){ toast(T.tInvalidNum); return; } PRAYER_IDS.forEach(function(p){ $("edit-"+p).value=v; }); });
-  $("editSave").addEventListener("click",function(){ PRAYER_IDS.forEach(function(p){ var v=parseInt($("edit-"+p).value,10); if(isNaN(v)||v<0)v=0; state.targets[p]=v; if(state.done[p]>v) state.done[p]=v; }); render(); scheduleSave(); closeSheet(editScrim); toast(T.tSaved); });
+  $("editSave").addEventListener("click",function(){ PRAYER_IDS.forEach(function(p){ var v=parseInt($("edit-"+p).value,10); if(isNaN(v)||v<0)v=0; state.targets[p]=v; if(state.done[p]>v) state.done[p]=v; }); syncPeriodFromCounts(); render(); scheduleSave(); closeSheet(editScrim); toast(T.tSaved); });
 
   var backupScrim=$("backupScrim");
   $("backupBtn").addEventListener("click",function(){ $("bkText").value=JSON.stringify(state); openSheet(backupScrim); });
@@ -451,7 +454,7 @@
   $("bkDownload").addEventListener("click",function(){ try{ var blob=new Blob([$("bkText").value],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="kaza-namazi-yedek-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast(T.tDownloading); }catch(e){ toast(T.tDownloadFail); } });
   $("bkRestore").addEventListener("click",function(){ try{ var s=JSON.parse($("bkText").value); if(!s||!s.targets||!s.done) throw 0; state=merge(makeDefault(),s); applyI18n(); syncPaceUI(); scheduleSave(); closeSheet(backupScrim); toast(T.tRestored); }catch(e){ toast(T.tReadFail); } });
 
-  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; }); render(); scheduleSave(); toast(T.tReset); } });
+  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; state.targets[p]=0; }); syncPeriodFromCounts(); render(); scheduleSave(); toast(T.tReset); } });
 
   var installBtn=$("installBtn"),installScrim=$("installScrim"),deferredPrompt=null;
   function isStandalone(){ return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true; }
