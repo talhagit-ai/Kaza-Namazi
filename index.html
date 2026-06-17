@@ -257,6 +257,7 @@
     var _ml=document.getElementById("manifestLink");
     if(_ml){ _ml.href=URL.createObjectURL(new Blob([JSON.stringify(_mf)],{type:"application/manifest+json"})); }
   }catch(e){}
+  if("serviceWorker" in navigator){ window.addEventListener("load",function(){ try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){} }); }
 
   var STORE_KEY="kazaState",LOCAL_KEY="kazaNamaziV2";
   var DPY=365,DEFAULT_YEARS=1,MAX_YEARS=50;
