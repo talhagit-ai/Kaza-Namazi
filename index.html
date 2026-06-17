@@ -54,6 +54,15 @@
   .yb-select select{appearance:none;-webkit-appearance:none;font-family:var(--sans);font-weight:700;font-size:15px;color:var(--text);background:rgba(212,176,104,.12);border:1px solid rgba(212,176,104,.4);border-radius:11px;padding:11px 36px 11px 14px;min-width:98px;cursor:pointer}
   .yb-select select:focus{outline:2px solid var(--gold);outline-offset:1px}
 
+  .installbtn{width:100%;border:0;background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1a140a;font-family:var(--sans);font-weight:700;font-size:15px;padding:14px;border-radius:14px;cursor:pointer;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .installbtn:active{filter:brightness(.96)}
+  .installbtn svg{width:18px;height:18px}
+  .installbtn .ib-k{font-weight:500;font-size:12.5px;color:rgba(26,20,10,.7)}
+  .installbtn[hidden]{display:none}
+  .steps{margin:4px 0;padding-left:20px;color:var(--text);font-size:14.5px;line-height:1.7}
+  .steps b{font-weight:600;color:var(--text)}
+  .steps li{margin-bottom:7px}
+
   .hero{
     background:linear-gradient(180deg,var(--surface-2),var(--surface));
     border:1px solid var(--line);border-radius:22px;padding:18px 20px 20px;margin-bottom:18px;
@@ -186,6 +195,11 @@
     </div>
   </div>
 
+  <button class="installbtn" id="installBtn" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>
+    Ana ekrana ekle <span class="ib-k">uygulama gibi aç</span>
+  </button>
+
   <section class="hero" aria-label="Genel ilerleme">
     <div class="savebar" id="savebar"><i></i><span id="saveTxt">Yükleniyor…</span></div>
     <div class="hero-top">
@@ -271,6 +285,30 @@
   </div>
 </div>
 
+<!-- INSTALL HELP SHEET -->
+<div class="scrim" id="installScrim">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="instTitle">
+    <h2 id="instTitle">Ana ekrana ekle</h2>
+    <div id="iosSteps">
+      <p class="hint">iPhone'da Safari otomatik eklemeye izin vermez, ama birkaç saniyede eklersin:</p>
+      <ol class="steps">
+        <li>Bu sayfa <b>Safari</b>'de açık olsun.</li>
+        <li>Alttaki <b>Paylaş</b> düğmesine dokun (kare + yukarı ok).</li>
+        <li>Listeden <b>Ana Ekrana Ekle</b> → <b>Ekle</b>.</li>
+      </ol>
+    </div>
+    <div id="androidSteps" hidden>
+      <p class="hint">Tarayıcı menüsünden hızlıca eklersin:</p>
+      <ol class="steps">
+        <li>Sağ üstteki <b>⋮</b> menüsüne dokun.</li>
+        <li><b>Ana ekrana ekle</b> (veya <b>Uygulamayı yükle</b>) → onayla.</li>
+      </ol>
+    </div>
+    <p class="hint" id="inappNote" hidden>Not: Bu sayfa bir uygulamanın içindeki tarayıcıda açılmış olabilir. Önce Safari/Chrome'da aç, sonra ekle.</p>
+    <div class="sheet-actions"><button class="primary" data-close style="flex:1">Tamam</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -281,8 +319,10 @@
   try{
     var _ai=document.getElementById("appleIcon"); if(_ai) _ai.href=APP_ICON;
     var _fi=document.getElementById("favIcon"); if(_fi) _fi.href=APP_ICON;
-    var _mf={ name:"Kaza Namaz\u0131 Takibi", short_name:"Kaza Takibi",
-      start_url:"./", scope:"./", display:"standalone", orientation:"portrait",
+    var _base=location.href.split('#')[0].split('?')[0];
+    var _dir=_base.slice(0,_base.lastIndexOf('/')+1);
+    var _mf={ name:"Kaza Namaz\u0131 Takibi", short_name:"Kaza Takibi", id:_dir,
+      start_url:_base, scope:_dir, display:"standalone", orientation:"portrait",
       background_color:"#0E1714", theme_color:"#0E1714", lang:"tr",
       icons:[ {src:APP_ICON, sizes:"192x192", type:"image/png", purpose:"any"},
               {src:APP_ICON, sizes:"512x512", type:"image/png", purpose:"any maskable"} ] };
@@ -566,10 +606,34 @@
     }
   });
 
+  // ---- ana ekrana ekle butonu ----
+  var installBtn=$("installBtn"), installScrim=$("installScrim"), deferredPrompt=null;
+  function isStandalone(){ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }
+  function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+  function showInstall(){ if(installBtn) installBtn.hidden = isStandalone(); }
+  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); deferredPrompt=e; showInstall(); });
+  window.addEventListener("appinstalled", function(){ deferredPrompt=null; if(installBtn) installBtn.hidden=true; toast("Ana ekrana eklendi"); });
+  function openInstallHelp(){
+    var ios=isIOS();
+    $("iosSteps").hidden=!ios; $("androidSteps").hidden=ios;
+    var ua=navigator.userAgent||"";
+    var inApp=/FBAN|FBAV|Instagram|Line\/|Twitter|WhatsApp|; wv\)/i.test(ua);
+    $("inappNote").hidden=!inApp;
+    openSheet(installScrim);
+  }
+  if(installBtn){
+    installBtn.addEventListener("click", function(){
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(c){ deferredPrompt=null; if(c && c.outcome==="accepted" && installBtn) installBtn.hidden=true; });
+      }else{ openInstallHelp(); }
+    });
+  }
+
   // ---- init ----
   setStatus("loading");
   loadState().then(function(s){
-    state=s; render(); syncPaceUI(); syncYearUI();
+    state=s; render(); syncPaceUI(); syncYearUI(); showInstall();
     setStatus(hasCloud ? "cloud" : (localOk()?"local":"warn"));
   });
 })();
