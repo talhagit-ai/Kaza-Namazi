@@ -15,627 +15,375 @@
 <link rel="manifest" id="manifestLink">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Amiri&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0E1714; --surface:#16221E; --surface-2:#1C2A25;
-    --line:rgba(242,237,228,.10); --line-soft:rgba(242,237,228,.06);
-    --text:#F2EDE4; --muted:#93A39B; --muted-2:#6E7E76;
-    --gold:#D4B068; --gold-2:#E7C883; --danger:#C8694E; --ok:#7FB08A;
-    --r:18px;
-    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --bg:#0E1714;--surface:#16221E;--surface-2:#1C2A25;
+    --line:rgba(242,237,228,.10);--line-soft:rgba(242,237,228,.06);
+    --text:#F2EDE4;--muted:#93A39B;--muted-2:#6E7E76;
+    --gold:#D4B068;--gold-2:#E7C883;--danger:#C8694E;--ok:#7FB08A;--r:18px;
+    --serif:'Fraunces',Georgia,serif;
     --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-    --arabic:'Amiri','Geeza Pro','Noto Naskh Arabic',serif;
+    --arabic:'Noto Naskh Arabic','Geeza Pro',serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0}
-  body{
-    font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;
-    background-image:
-      radial-gradient(120% 80% at 50% -20%, rgba(212,176,104,.12), transparent 60%),
-      radial-gradient(90% 60% at 80% 8%, rgba(124,143,201,.07), transparent 55%);
+  html[dir="rtl"] body{font-family:var(--arabic)}
+  html[dir="rtl"] h1,html[dir="rtl"] .sheet h2,html[dir="rtl"] .names .tr{font-family:var(--arabic)}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;
+    background-image:radial-gradient(120% 80% at 50% -20%,rgba(212,176,104,.12),transparent 60%),radial-gradient(90% 60% at 80% 8%,rgba(124,143,201,.07),transparent 55%);
     background-attachment:fixed;
-    padding:calc(env(safe-area-inset-top) + 22px) calc(env(safe-area-inset-right) + 16px)
-            calc(env(safe-area-inset-bottom) + 40px) calc(env(safe-area-inset-left) + 16px);
-  }
+    padding:calc(env(safe-area-inset-top) + 18px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 40px) calc(env(safe-area-inset-left) + 16px);}
   .wrap{max-width:560px;margin:0 auto}
-
-  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0 0 8px}
+  .topbar{display:flex;justify-content:flex-end;margin-bottom:12px}
+  .langwrap{position:relative}
+  .langwrap::after{content:"▾";position:absolute;inset-inline-end:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:11px;pointer-events:none}
+  .langwrap select{appearance:none;-webkit-appearance:none;font-family:var(--sans);font-weight:600;font-size:13px;color:var(--text);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding-block:8px;padding-inline-start:12px;padding-inline-end:30px;cursor:pointer}
+  .langwrap select:focus{outline:2px solid var(--gold);outline-offset:1px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0 0 8px}
   h1{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.12;letter-spacing:-.01em;margin:0 0 6px}
   .lead{color:var(--muted);font-size:14.5px;margin:0 0 16px;max-width:44ch}
-
-  .yearbar{display:flex;align-items:center;justify-content:space-between;gap:14px;
-    background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--line);
-    border-radius:16px;padding:14px 16px;margin-bottom:18px}
+  .yearbar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:18px}
   .yb-label{font-size:14px;font-weight:600;color:var(--text)}
-  .yb-sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4;max-width:30ch}
+  .yb-sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4;max-width:32ch}
   .yb-select{position:relative;flex:none}
-  .yb-select::after{content:"\25BE";position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:12px;pointer-events:none}
-  .yb-select select{appearance:none;-webkit-appearance:none;font-family:var(--sans);font-weight:700;font-size:15px;color:var(--text);background:rgba(212,176,104,.12);border:1px solid rgba(212,176,104,.4);border-radius:11px;padding:11px 36px 11px 14px;min-width:98px;cursor:pointer}
+  .yb-select::after{content:"▾";position:absolute;inset-inline-end:13px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:12px;pointer-events:none}
+  .yb-select select{appearance:none;-webkit-appearance:none;font-family:var(--sans);font-weight:700;font-size:15px;color:var(--text);background:rgba(212,176,104,.12);border:1px solid rgba(212,176,104,.4);border-radius:11px;padding-block:11px;padding-inline-start:14px;padding-inline-end:36px;min-width:96px;cursor:pointer}
   .yb-select select:focus{outline:2px solid var(--gold);outline-offset:1px}
-
   .installbtn{width:100%;border:0;background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1a140a;font-family:var(--sans);font-weight:700;font-size:15px;padding:14px;border-radius:14px;cursor:pointer;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
   .installbtn:active{filter:brightness(.96)}
   .installbtn svg{width:18px;height:18px}
   .installbtn .ib-k{font-weight:500;font-size:12.5px;color:rgba(26,20,10,.7)}
   .installbtn[hidden]{display:none}
-  .steps{margin:4px 0;padding-left:20px;color:var(--text);font-size:14.5px;line-height:1.7}
-  .steps b{font-weight:600;color:var(--text)}
+  .steps{margin:4px 0;padding-inline-start:20px;color:var(--text);font-size:14.5px;line-height:1.7}
+  .steps b{font-weight:600}
   .steps li{margin-bottom:7px}
-
-  .hero{
-    background:linear-gradient(180deg,var(--surface-2),var(--surface));
-    border:1px solid var(--line);border-radius:22px;padding:18px 20px 20px;margin-bottom:18px;
-    position:relative;overflow:hidden;
-  }
-  .hero::before{content:"";position:absolute;inset:0;
-    background:radial-gradient(80% 120% at 50% -30%, rgba(212,176,104,.16), transparent 60%);pointer-events:none}
-
-  .savebar{
-    display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;letter-spacing:.02em;
-    color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line-soft);
-    padding:5px 11px;border-radius:99px;margin-bottom:14px;position:relative;
-  }
+  .hero{background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--line);border-radius:22px;padding:18px 20px 20px;margin-bottom:18px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 50% -30%,rgba(212,176,104,.16),transparent 60%);pointer-events:none}
+  .savebar{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line-soft);padding:5px 11px;border-radius:99px;margin-bottom:14px}
   .savebar i{width:7px;height:7px;border-radius:50%;background:var(--muted-2);flex:none}
   .savebar.saving i{background:var(--gold);animation:pulse 1s infinite}
-  .savebar.saved i{background:var(--ok)} .savebar.saved{color:var(--ok)}
-  .savebar.warn i{background:var(--danger)} .savebar.warn{color:var(--danger)}
+  .savebar.saved i{background:var(--ok)}.savebar.saved{color:var(--ok)}
+  .savebar.warn i{background:var(--danger)}.savebar.warn{color:var(--danger)}
   @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-
   .hero-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-  .hero-label{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);font-weight:600}
-  .pct{font-family:var(--serif);font-size:18px;color:var(--gold-2);font-variant-numeric:tabular-nums}
+  .hero-label{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);font-weight:600}
+  .pct{font-family:var(--serif);font-size:18px;color:var(--gold-2)}
   .remain{display:flex;align-items:baseline;gap:10px;margin:6px 0 2px}
-  .remain .big{font-family:var(--serif);font-weight:500;font-size:54px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .remain .big{font-family:var(--serif);font-weight:500;font-size:52px;line-height:1;letter-spacing:-.02em}
   .remain .unit{color:var(--muted);font-size:15px;font-weight:500}
   .sub{color:var(--muted);font-size:13px;margin:2px 0 16px}
   .sub b{color:var(--text);font-weight:600}
-
   .meter{height:8px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
-  .meter > i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-2));width:0;transition:width .5s cubic-bezier(.2,.7,.2,1)}
-
+  .meter>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-2));width:0;transition:width .5s cubic-bezier(.2,.7,.2,1)}
   .pace{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--muted)}
   .pace .seg{display:inline-flex;background:rgba(255,255,255,.05);border-radius:10px;padding:3px;gap:2px}
   .pace .seg button{border:0;background:transparent;color:var(--muted);font-family:var(--sans);font-size:12.5px;font-weight:600;padding:5px 9px;border-radius:7px;cursor:pointer;min-width:30px}
   .pace .seg button[aria-pressed="true"]{background:var(--gold);color:#1a140a}
-  .pace .eta{color:var(--text)} .pace .eta b{color:var(--gold-2);font-weight:600}
-
-  .daybtn{
-    width:100%;border:1px solid rgba(212,176,104,.45);
-    background:linear-gradient(180deg, rgba(212,176,104,.18), rgba(212,176,104,.08));color:var(--gold-2);
-    font-family:var(--sans);font-weight:600;font-size:15.5px;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:24px;
-    display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease, background .2s ease;
-  }
-  .daybtn:active{transform:scale(.985);background:linear-gradient(180deg, rgba(212,176,104,.26), rgba(212,176,104,.12))}
-  .daybtn span.k{font-size:13px;color:var(--muted);font-weight:500}
+  .pace .eta{color:var(--text)}
+  .daybtn{width:100%;border:1px solid rgba(212,176,104,.45);background:linear-gradient(180deg,rgba(212,176,104,.18),rgba(212,176,104,.08));color:var(--gold-2);font-family:var(--sans);font-weight:600;font-size:15.5px;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .daybtn:active{filter:brightness(1.08)}
+  .daybtn .k{font-size:13px;color:var(--muted);font-weight:500}
   .daybtn:disabled{opacity:.45;cursor:default}
-
-  .seclabel{display:flex;align-items:center;gap:12px;margin:0 2px 12px;color:var(--muted-2);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+  .seclabel{display:flex;align-items:center;gap:12px;margin:0 2px 12px;color:var(--muted-2);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
   .seclabel::after{content:"";flex:1;height:1px;background:var(--line)}
-
   .cards{display:flex;flex-direction:column;gap:12px}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;position:relative;--a:var(--gold)}
-  .card.done{border-color:rgba(212,176,104,.5);border-color:color-mix(in srgb, var(--a) 55%, transparent)}
+  .card.done{border-color:rgba(212,176,104,.5);border-color:color-mix(in srgb,var(--a) 55%,transparent)}
   .card-head{display:flex;align-items:center;gap:12px;margin-bottom:13px}
-  .dot{width:13px;height:13px;border-radius:50%;flex:none;background:var(--a);background:radial-gradient(circle at 35% 30%, color-mix(in srgb,var(--a) 92%, #fff), var(--a));box-shadow:0 0 0 4px color-mix(in srgb, var(--a) 16%, transparent)}
+  .dot{width:13px;height:13px;border-radius:50%;flex:none;background:var(--a);background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--a) 92%,#fff),var(--a));box-shadow:0 0 0 4px color-mix(in srgb,var(--a) 16%,transparent)}
   .names{flex:1;min-width:0}
-  .names .tr{font-family:var(--serif);font-size:19px;font-weight:500;line-height:1}
-  .badge{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--line-soft);padding:2px 7px;border-radius:99px;vertical-align:middle;margin-left:7px;position:relative;top:-1px}
+  .names .tr{font-family:var(--serif);font-size:19px;font-weight:500;line-height:1;display:inline}
+  .badge{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--line-soft);padding:2px 7px;border-radius:99px;margin-inline-start:7px;position:relative;top:-1px}
   .names .ar{font-family:var(--arabic);font-size:15px;color:var(--muted);direction:rtl;line-height:1;margin-top:4px}
-  .count{text-align:right;flex:none}
-  .count .now{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-  .count .of{color:var(--muted-2);font-size:13px;font-variant-numeric:tabular-nums}
+  .count{text-align:end;flex:none}
+  .count .now{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .count .of{color:var(--muted-2);font-size:13px}
   .card .meter{height:6px;margin-bottom:13px}
-  .card .meter > i{background:var(--a);background:linear-gradient(90deg, color-mix(in srgb,var(--a) 80%, #000 0%), var(--a))}
-
+  .card .meter>i{background:var(--a);background:linear-gradient(90deg,color-mix(in srgb,var(--a) 80%,#000),var(--a))}
   .row{display:flex;align-items:center;gap:8px}
   .left-note{font-size:12.5px;color:var(--muted);flex:1}
-  .left-note b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+  .left-note b{color:var(--text);font-weight:600}
   .left-note.complete{color:var(--ok);font-weight:600}
-
-  .btn{border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-family:var(--sans);font-weight:600;border-radius:11px;cursor:pointer;height:42px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:transform .1s ease, border-color .2s ease}
-  .btn:active{transform:scale(.94)}
+  .btn{border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-family:var(--sans);font-weight:600;border-radius:11px;cursor:pointer;height:42px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+  .btn:active{filter:brightness(1.2)}
   .btn.minus{font-size:20px;color:var(--muted);width:42px;padding:0}
-  .btn.plus{background:var(--surface-2);background:color-mix(in srgb, var(--a) 22%, var(--surface-2));border-color:var(--line);border-color:color-mix(in srgb, var(--a) 45%, transparent);color:var(--text);color:color-mix(in srgb, var(--a) 85%, #fff);padding:0 16px}
-  .btn.plus.lg{font-size:15px}
-  .btn:disabled{opacity:.4;cursor:default;transform:none}
-
+  .btn.plus{background:var(--surface-2);background:color-mix(in srgb,var(--a) 22%,var(--surface-2));border-color:var(--line);border-color:color-mix(in srgb,var(--a) 45%,transparent);color:var(--text);color:color-mix(in srgb,var(--a) 85%,#fff);padding:0 16px}
+  .btn:disabled{opacity:.4;cursor:default}
   .foot{margin-top:26px;display:flex;flex-direction:column;gap:10px}
   .foot-row{display:flex;gap:10px}
   .ghost{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);font-family:var(--sans);font-weight:600;font-size:13.5px;border-radius:12px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
   .ghost:active{background:rgba(255,255,255,.04)}
   .ghost.danger{color:var(--danger);border-color:rgba(200,105,78,.3)}
   .ghost svg{width:15px;height:15px;opacity:.85}
-
   .save-note{font-size:12px;color:var(--muted-2);text-align:center;line-height:1.6;margin-top:18px;padding:0 6px}
   .save-note b{color:var(--muted)}
-
-  .scrim{position:fixed;inset:0;background:rgba(6,11,9,.66);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:40;padding:0 10px calc(env(safe-area-inset-bottom) + 10px)}
-  .scrim.open{display:flex;animation:fade .2s ease}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  .sheet{width:100%;max-width:540px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px 18px 18px;max-height:86vh;overflow:auto;animation:rise .26s cubic-bezier(.2,.8,.2,1)}
-  @keyframes rise{from{transform:translateY(14px);opacity:.6}to{transform:translateY(0);opacity:1}}
+  .scrim{position:fixed;inset:0;background:rgba(6,11,9,.66);display:none;align-items:flex-end;justify-content:center;z-index:40;padding:0 10px calc(env(safe-area-inset-bottom) + 10px)}
+  .scrim.open{display:flex}
+  .sheet{width:100%;max-width:540px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px 18px 18px;max-height:86vh;overflow:auto}
   .sheet h2{font-family:var(--serif);font-weight:500;font-size:21px;margin:0 0 4px}
   .sheet p.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
   .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
   .field:last-of-type{border-bottom:0}
   .field label{display:flex;align-items:center;gap:10px;font-size:15px}
   .field .fdot{width:10px;height:10px;border-radius:50%}
-  .field input{width:96px;text-align:right;font-family:var(--sans);font-weight:600;font-size:15px;color:var(--text);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-variant-numeric:tabular-nums}
+  .field input{width:96px;text-align:end;font-family:var(--sans);font-weight:600;font-size:15px;color:var(--text);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
   .field input:focus{outline:2px solid var(--gold);outline-offset:1px}
   .setall{display:flex;gap:8px;align-items:center;margin:14px 0 4px;font-size:13px;color:var(--muted);flex-wrap:wrap}
   .setall input{width:90px}
   textarea{width:100%;min-height:120px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
   .sheet-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
   .primary{flex:1;border:0;background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1a140a;font-family:var(--sans);font-weight:700;font-size:15px;border-radius:13px;padding:14px;cursor:pointer;min-width:120px}
-  .primary:active{filter:brightness(.96)}
   .secondary{border:1px solid var(--line);background:transparent;color:var(--muted);font-weight:600;font-size:14px;border-radius:13px;padding:14px 18px;cursor:pointer}
   .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--line);color:var(--text);padding:11px 18px;border-radius:99px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s ease;z-index:60;box-shadow:0 8px 28px rgba(0,0,0,.4)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
   button:focus:not(:focus-visible){outline:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-
+  <div class="topbar"><div class="langwrap"><select id="langSel" aria-label="Dil / Language"></select></div></div>
   <p class="eyebrow" id="eyebrow">1 yıllık telafi · 5 vakit + vitir</p>
-  <h1>Kaza Namazı Takibi</h1>
-  <p class="lead">Kıldıkça işaretle. İlerlemen her dokunuşta otomatik kaydedilir ve hesabına yedeklenir.</p>
+  <h1 data-i18n="h1">Kaza Namazı Takibi</h1>
+  <p class="lead" data-i18n="lead">Kıldıkça işaretle, kalanı gör.</p>
 
   <div class="yearbar">
     <div class="yb-text">
-      <div class="yb-label">Telafi süresi</div>
-      <div class="yb-sub">Kaç yıllık namazı kaza ediyorsun? (yıl × 365 gün)</div>
+      <div class="yb-label" data-i18n="ybLabel">Telafi süresi</div>
+      <div class="yb-sub" data-i18n="ybSub">Kaç yıllık namazı kaza ediyorsun?</div>
     </div>
-    <div class="yb-select">
-      <select id="yearSel" aria-label="Telafi edilecek yıl sayısı"></select>
-    </div>
+    <div class="yb-select"><select id="yearSel" aria-label="Yıl"></select></div>
   </div>
 
   <button class="installbtn" id="installBtn" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 21h14"/></svg>
-    Ana ekrana ekle <span class="ib-k">uygulama gibi aç</span>
+    <span data-i18n="installBtn">Ana ekrana ekle</span> <span class="ib-k" data-i18n="installBtnSub">uygulama gibi aç</span>
   </button>
 
-  <section class="hero" aria-label="Genel ilerleme">
+  <section class="hero">
     <div class="savebar" id="savebar"><i></i><span id="saveTxt">Yükleniyor…</span></div>
-    <div class="hero-top">
-      <span class="hero-label">Kalan namaz</span>
-      <span class="pct" id="pct">%0</span>
-    </div>
-    <div class="remain">
-      <span class="big" id="remainBig">—</span>
-      <span class="unit">vakit kaldı</span>
-    </div>
-    <p class="sub"><b id="doneTotal">0</b> kılındı · toplam <b id="grandTotal">0</b></p>
+    <div class="hero-top"><span class="hero-label" data-i18n="heroLabel">Kalan namaz</span><span class="pct" id="pct">%0</span></div>
+    <div class="remain"><span class="big" id="remainBig">—</span> <span class="unit" data-i18n="remainUnit">vakit kaldı</span></div>
+    <p class="sub" id="subLine"></p>
     <div class="meter"><i id="heroFill"></i></div>
-
     <div class="pace">
-      <span>Günde</span>
-      <span class="seg" role="group" aria-label="Günlük telafi hızı">
-        <button data-pace="1" aria-pressed="true">1 gün</button>
-        <button data-pace="2" aria-pressed="false">2 gün</button>
-        <button data-pace="3" aria-pressed="false">3 gün</button>
+      <span data-i18n="paceLabel">Günde</span>
+      <span class="seg" role="group">
+        <button data-pace="1" aria-pressed="true">1</button>
+        <button data-pace="2" aria-pressed="false">2</button>
+        <button data-pace="3" aria-pressed="false">3</button>
       </span>
       <span class="eta" id="eta"></span>
     </div>
   </section>
 
-  <button class="daybtn" id="dayBtn">+ Bir gün tamamla <span class="k">(5 vakit + vitir)</span></button>
+  <button class="daybtn" id="dayBtn"><span data-i18n="dayBtn">+ Bir gün tamamla</span> <span class="k" data-i18n="dayBtnSub">(5 vakit + vitir)</span></button>
 
-  <div class="seclabel">Namazlar</div>
+  <div class="seclabel" data-i18n="secPrayers">Namazlar</div>
   <div class="cards" id="cards"></div>
 
   <div class="foot">
     <div class="foot-row">
-      <button class="ghost" id="editBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        Sayıları düzenle
-      </button>
-      <button class="ghost" id="backupBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-        Yedek dosyası
-      </button>
+      <button class="ghost" id="editBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span data-i18n="editBtn">Sayıları düzenle</span></button>
+      <button class="ghost" id="backupBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg><span data-i18n="backupBtn">Yedek dosyası</span></button>
     </div>
-    <button class="ghost danger" id="resetBtn">Tümünü sıfırla</button>
+    <button class="ghost danger" id="resetBtn" data-i18n="resetBtn">Tümünü sıfırla</button>
   </div>
 
-  <p class="save-note">
-    İlerlemen <b>otomatik kaydedilir</b> ve aynı hesapla açtığın her cihazda burada olur.
-    Kolay erişim için bu sohbeti <b>sabitle (pin)</b>. Ekstra güvence istersen "Yedek dosyası"ndan
-    bir kopya da indirebilirsin.
-  </p>
+  <p class="save-note" data-i18n-html="saveNote"></p>
 </div>
 
-<!-- EDIT SHEET -->
-<div class="scrim" id="editScrim">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="editTitle">
-    <h2 id="editTitle">Sayıları düzenle</h2>
-    <p class="hint">Üstten yıl seçtiğinde her namaz otomatik hesaplanır (yıl × 365 gün). Burada tek tek ince ayar yapabilirsin — artık yıllar için +2-3 gün ya da muaf günleri düşmek gibi.</p>
-    <div id="editFields"></div>
-    <div class="setall">
-      <span>Tümünü şuna ayarla:</span>
-      <input type="number" id="setAllInput" inputmode="numeric" min="0" placeholder="örn. 3287">
-      <button class="secondary" id="setAllBtn" style="padding:9px 14px">Uygula</button>
-    </div>
-    <div class="sheet-actions">
-      <button class="secondary" data-close>Vazgeç</button>
-      <button class="primary" id="editSave">Kaydet</button>
-    </div>
-  </div>
-</div>
+<div class="scrim" id="editScrim"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 id="editTitle" data-i18n="editTitle">Sayıları düzenle</h2>
+  <p class="hint" data-i18n="editHint"></p>
+  <div id="editFields"></div>
+  <div class="setall"><span data-i18n="setAllLabel">Tümünü şuna ayarla:</span><input type="number" id="setAllInput" inputmode="numeric" min="0" data-i18n-ph="setAllPh"><button class="secondary" id="setAllBtn" data-i18n="apply" style="padding:9px 14px">Uygula</button></div>
+  <div class="sheet-actions"><button class="secondary" data-close data-i18n="cancel">Vazgeç</button><button class="primary" id="editSave" data-i18n="saveBtn">Kaydet</button></div>
+</div></div>
 
-<!-- BACKUP SHEET -->
-<div class="scrim" id="backupScrim">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
-    <h2 id="bkTitle">Yedek dosyası</h2>
-    <p class="hint">Verin zaten otomatik saklanıyor. Bu, istersen elle alabileceğin ek bir kopyadır — Notlar'a yapıştır ya da indir. Yeni bir yere geçerken buraya yapıştırıp geri yükleyebilirsin.</p>
-    <textarea id="bkText" spellcheck="false" aria-label="Yedek verisi"></textarea>
-    <div class="sheet-actions">
-      <button class="secondary" id="bkCopy">Kopyala</button>
-      <button class="secondary" id="bkDownload">Dosya indir</button>
-      <button class="primary" id="bkRestore">Geri yükle</button>
-    </div>
-    <div class="sheet-actions" style="margin-top:10px">
-      <button class="secondary" data-close style="flex:1">Kapat</button>
-    </div>
-  </div>
-</div>
+<div class="scrim" id="backupScrim"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 id="bkTitle" data-i18n="bkTitle">Yedek dosyası</h2>
+  <p class="hint" data-i18n="bkHint"></p>
+  <textarea id="bkText" spellcheck="false" aria-label="backup"></textarea>
+  <div class="sheet-actions"><button class="secondary" id="bkCopy" data-i18n="bkCopy">Kopyala</button><button class="secondary" id="bkDownload" data-i18n="bkDownload">Dosya indir</button><button class="primary" id="bkRestore" data-i18n="bkRestore">Geri yükle</button></div>
+  <div class="sheet-actions" style="margin-top:10px"><button class="secondary" data-close data-i18n="bkClose" style="flex:1">Kapat</button></div>
+</div></div>
 
-<!-- INSTALL HELP SHEET -->
-<div class="scrim" id="installScrim">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="instTitle">
-    <h2 id="instTitle">Ana ekrana ekle</h2>
-    <div id="iosSteps">
-      <p class="hint">iPhone'da Safari otomatik eklemeye izin vermez, ama birkaç saniyede eklersin:</p>
-      <ol class="steps">
-        <li>Bu sayfa <b>Safari</b>'de açık olsun.</li>
-        <li>Alttaki <b>Paylaş</b> düğmesine dokun (kare + yukarı ok).</li>
-        <li>Listeden <b>Ana Ekrana Ekle</b> → <b>Ekle</b>.</li>
-      </ol>
-    </div>
-    <div id="androidSteps" hidden>
-      <p class="hint">Tarayıcı menüsünden hızlıca eklersin:</p>
-      <ol class="steps">
-        <li>Sağ üstteki <b>⋮</b> menüsüne dokun.</li>
-        <li><b>Ana ekrana ekle</b> (veya <b>Uygulamayı yükle</b>) → onayla.</li>
-      </ol>
-    </div>
-    <p class="hint" id="inappNote" hidden>Not: Bu sayfa bir uygulamanın içindeki tarayıcıda açılmış olabilir. Önce Safari/Chrome'da aç, sonra ekle.</p>
-    <div class="sheet-actions"><button class="primary" data-close style="flex:1">Tamam</button></div>
-  </div>
-</div>
+<div class="scrim" id="installScrim"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 id="instTitle" data-i18n="instTitle">Ana ekrana ekle</h2>
+  <div id="iosSteps"><p class="hint" data-i18n="iosHint"></p><ol class="steps" id="iosList"></ol></div>
+  <div id="androidSteps" hidden><p class="hint" data-i18n="androidHint"></p><ol class="steps" id="androidList"></ol></div>
+  <p class="hint" id="inappNote" data-i18n="inappNote" hidden></p>
+  <div class="sheet-actions"><button class="primary" data-close data-i18n="ok" style="flex:1">Tamam</button></div>
+</div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 (function(){
   "use strict";
-  // ---- ana ekran / uygulama kurulumu (Samsung + iPhone) ----
-  var APP_ICON = "data:image/png;base64,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";
+  var APP_ICON="data:image/png;base64,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";
   try{
     var _ai=document.getElementById("appleIcon"); if(_ai) _ai.href=APP_ICON;
     var _fi=document.getElementById("favIcon"); if(_fi) _fi.href=APP_ICON;
     var _base=location.href.split('#')[0].split('?')[0];
     var _dir=_base.slice(0,_base.lastIndexOf('/')+1);
-    var _mf={ name:"Kaza Namaz\u0131 Takibi", short_name:"Kaza Takibi", id:_dir,
-      start_url:_base, scope:_dir, display:"standalone", orientation:"portrait",
-      background_color:"#0E1714", theme_color:"#0E1714", lang:"tr",
-      icons:[ {src:APP_ICON, sizes:"192x192", type:"image/png", purpose:"any"},
-              {src:APP_ICON, sizes:"512x512", type:"image/png", purpose:"any maskable"} ] };
+    var _mf={name:"Kaza Namazı Takibi",short_name:"Kaza",id:_dir,start_url:_base,scope:_dir,display:"standalone",orientation:"portrait",background_color:"#0E1714",theme_color:"#0E1714",icons:[{src:APP_ICON,sizes:"192x192",type:"image/png",purpose:"any"},{src:APP_ICON,sizes:"512x512",type:"image/png",purpose:"any maskable"}]};
     var _ml=document.getElementById("manifestLink");
     if(_ml){ _ml.href=URL.createObjectURL(new Blob([JSON.stringify(_mf)],{type:"application/manifest+json"})); }
   }catch(e){}
-  var STORE_KEY = "kazaState";
-  var LOCAL_KEY = "kazaNamaziV2";
-  var DPY = 365;           // gün / yıl
-  var DEFAULT_YEARS = 1;
-  var MAX_YEARS = 50;
-  var PRAYERS = [
-    { id:"sabah",  tr:"Sabah",  ar:"الفجر",  a:"#EBB98C" },
-    { id:"ogle",   tr:"Öğle",   ar:"الظهر",  a:"#F4CF5A" },
-    { id:"ikindi", tr:"İkindi", ar:"العصر",  a:"#E69240" },
-    { id:"aksam",  tr:"Akşam",  ar:"المغرب", a:"#D2654A" },
-    { id:"yatsi",  tr:"Yatsı",  ar:"العشاء", a:"#7C8FC9" },
-    { id:"vitir",  tr:"Vitir",  ar:"الوتر",  a:"#A78BD0", tag:"vacip" }
-  ];
 
-  var hasCloud = (typeof window !== "undefined") && window.storage && typeof window.storage.get === "function";
+  var STORE_KEY="kazaState",LOCAL_KEY="kazaNamaziV2";
+  var DPY=365,DEFAULT_YEARS=1,MAX_YEARS=50;
+  var PRAYER_IDS=["sabah","ogle","ikindi","aksam","yatsi","vitir"];
+  var ACCENT={sabah:"#EBB98C",ogle:"#F4CF5A",ikindi:"#E69240",aksam:"#D2654A",yatsi:"#7C8FC9",vitir:"#A78BD0"};
+  var ARABIC={sabah:"الفجر",ogle:"الظهر",ikindi:"العصر",aksam:"المغرب",yatsi:"العشاء",vitir:"الوتر"};
+  var RTL={ar:1,fa:1};
+  var LOCALE={tr:"tr",en:"en-GB",nl:"nl",fr:"fr",de:"de",ar:"ar",fa:"fa"};
+  var LANGS=[{code:"tr",label:"Türkçe"},{code:"en",label:"English"},{code:"nl",label:"Nederlands"},{code:"fr",label:"Français"},{code:"de",label:"Deutsch"},{code:"ar",label:"العربية"},{code:"fa",label:"فارسی"}];
+  var I18N={
+  tr:{htmlTitle:"Kaza Namazı Takibi",h1:"Kaza Namazı Takibi",eyebrow:"{y} yıllık telafi · 5 vakit + vitir",lead:"Kıldıkça işaretle, kalanı gör. İlerlemen bu cihaza otomatik kaydedilir.",ybLabel:"Telafi süresi",ybSub:"Kaç yıllık namazı kaza ediyorsun? (yıl × 365 gün)",heroLabel:"Kalan namaz",remainUnit:"vakit kaldı",sub:"<b>{done}</b> kılındı · toplam <b>{total}</b>",paceLabel:"Günde",secPrayers:"Namazlar",dayBtn:"+ Bir gün tamamla",dayBtnSub:"(5 vakit + vitir)",installBtn:"Ana ekrana ekle",installBtnSub:"uygulama gibi aç",editBtn:"Sayıları düzenle",backupBtn:"Yedek dosyası",resetBtn:"Tümünü sıfırla",saveNote:"İlerlemen <b>otomatik kaydedilir</b> ve bu cihazda saklanır. Yeni cihaza geçerken “Yedek dosyası” ile taşıyabilirsin.",editTitle:"Sayıları düzenle",editHint:"Üstten yıl seçtiğinde her namaz otomatik hesaplanır (yıl × 365 gün). Burada tek tek ince ayar yapabilirsin — artık yıllar için +2-3 gün ya da muaf günleri düşmek gibi.",setAllLabel:"Tümünü şuna ayarla:",setAllPh:"örn. 3287",apply:"Uygula",cancel:"Vazgeç",saveBtn:"Kaydet",bkTitle:"Yedek dosyası",bkHint:"Verin bu cihazda saklanıyor. Bu, elle alabileceğin ek bir kopyadır — Notlar’a yapıştır ya da indir. Yeni cihaza geçerken buraya yapıştırıp geri yükle.",bkCopy:"Kopyala",bkDownload:"Dosya indir",bkRestore:"Geri yükle",bkClose:"Kapat",instTitle:"Ana ekrana ekle",iosHint:"iPhone’da Safari otomatik eklemeye izin vermez, ama birkaç saniyede eklersin:",iosSteps:["Bu sayfa <b>Safari</b>’de açık olsun.","Alttaki <b>Paylaş</b> düğmesine dokun (kare + yukarı ok).","Listeden <b>Ana Ekrana Ekle</b> → <b>Ekle</b>."],androidHint:"Tarayıcı menüsünden hızlıca eklersin:",androidSteps:["Sağ üstteki <b>⋮</b> menüsüne dokun.","<b>Ana ekrana ekle</b> (veya <b>Uygulamayı yükle</b>) → onayla."],inappNote:"Not: Bu sayfa bir uygulamanın içindeki tarayıcıda açılmış olabilir. Önce Safari/Chrome’da aç, sonra ekle.",ok:"Tamam",completed:"Tamamlandı ✓",remaining:"Kalan <b>{n}</b>",allDone:"Hepsi tamamlandı — Allah kabul etsin 🤲",wajib:"vacip",prayers:["Sabah","Öğle","İkindi","Akşam","Yatsı","Vitir"],yearU:{one:"yıl",other:"yıl"},dayU:{one:"gün",other:"gün"},save:{loading:"Yükleniyor…",saving:"Kaydediliyor…",cloud:"✓ Otomatik yedeklendi",local:"✓ Kaydedildi",warn:"⚠ Kayıt sorunu — yedek al"},etaTpl:"→ ~{days} {day}, tahmini bitiş {date}",tDayAdded:"Bir gün eklendi",tInvalidNum:"Geçerli bir sayı gir",tSaved:"Kaydedildi",tCopied:"Kopyalandı",tDownloading:"Dosya indiriliyor",tDownloadFail:"İndirilemedi",tReadFail:"Veri okunamadı",tRestored:"Geri yüklendi",tReset:"Sıfırlandı",tYearSet:"{y} {yr} · her namaz {n}",tInstalled:"Ana ekrana eklendi",resetConfirm:"Tüm ilerleme sıfırlanacak. Emin misin?\n(Önce yedek almak istersen Vazgeç.)",numsep:".",percentBefore:true},
+  en:{htmlTitle:"Qada Prayer Tracker",h1:"Qada Prayer Tracker",eyebrow:"{y}-year make-up · 5 daily + Witr",lead:"Tap as you pray, see what’s left. Your progress is saved on this device automatically.",ybLabel:"Make-up period",ybSub:"How many years of prayers are you making up? (years × 365 days)",heroLabel:"Prayers left",remainUnit:"prayers left",sub:"<b>{done}</b> done · <b>{total}</b> total",paceLabel:"Per day",secPrayers:"Prayers",dayBtn:"+ Complete a day",dayBtnSub:"(5 daily + Witr)",installBtn:"Add to home screen",installBtnSub:"open like an app",editBtn:"Edit numbers",backupBtn:"Backup file",resetBtn:"Reset all",saveNote:"Your progress is <b>saved automatically</b> on this device. Use “Backup file” to move it to a new device.",editTitle:"Edit numbers",editHint:"Picking a year above sets every prayer automatically (years × 365 days). Fine-tune each one here — e.g. +2-3 days for leap years, or subtracting exempt days.",setAllLabel:"Set all to:",setAllPh:"e.g. 3287",apply:"Apply",cancel:"Cancel",saveBtn:"Save",bkTitle:"Backup file",bkHint:"Your data is stored on this device. This is an extra copy you can keep — paste it into Notes or download it. Paste it here to restore on a new device.",bkCopy:"Copy",bkDownload:"Download file",bkRestore:"Restore",bkClose:"Close",instTitle:"Add to home screen",iosHint:"On iPhone, Safari doesn’t allow auto-adding, but it takes a few seconds:",iosSteps:["Open this page in <b>Safari</b>.","Tap the <b>Share</b> button (square with an up arrow).","Choose <b>Add to Home Screen</b> → <b>Add</b>."],androidHint:"Add it quickly from the browser menu:",androidSteps:["Tap the <b>⋮</b> menu (top right).","<b>Add to Home screen</b> (or <b>Install app</b>) → confirm."],inappNote:"Note: this page may be open inside an app’s browser. Open it in Safari/Chrome first, then add it.",ok:"OK",completed:"Completed ✓",remaining:"Remaining <b>{n}</b>",allDone:"All completed — may Allah accept it 🤲",wajib:"wajib",prayers:["Fajr","Dhuhr","Asr","Maghrib","Isha","Witr"],yearU:{one:"year",other:"years"},dayU:{one:"day",other:"days"},save:{loading:"Loading…",saving:"Saving…",cloud:"✓ Backed up",local:"✓ Saved",warn:"⚠ Save problem — back up"},etaTpl:"→ ~{days} {day}, est. finish {date}",tDayAdded:"Added a day",tInvalidNum:"Enter a valid number",tSaved:"Saved",tCopied:"Copied",tDownloading:"Downloading file",tDownloadFail:"Couldn’t download",tReadFail:"Couldn’t read data",tRestored:"Restored",tReset:"Reset",tYearSet:"{y} {yr} · each prayer {n}",tInstalled:"Added to home screen",resetConfirm:"All progress will be reset. Are you sure?\n(Tap Cancel if you want to back up first.)",numsep:",",percentBefore:false},
+  nl:{htmlTitle:"Inhaalgebed-tracker",h1:"Inhaalgebed-tracker",eyebrow:"{y} jaar inhalen · 5 dagelijks + Witr",lead:"Vink af terwijl je bidt, zie wat er over is. Je voortgang wordt automatisch op dit apparaat bewaard.",ybLabel:"Inhaalperiode",ybSub:"Hoeveel jaar aan gebeden haal je in? (jaren × 365 dagen)",heroLabel:"Resterende gebeden",remainUnit:"gebeden over",sub:"<b>{done}</b> gedaan · <b>{total}</b> totaal",paceLabel:"Per dag",secPrayers:"Gebeden",dayBtn:"+ Een dag voltooien",dayBtnSub:"(5 dagelijks + Witr)",installBtn:"Aan beginscherm toevoegen",installBtnSub:"openen als app",editBtn:"Aantallen bewerken",backupBtn:"Back-upbestand",resetBtn:"Alles wissen",saveNote:"Je voortgang wordt <b>automatisch bewaard</b> op dit apparaat. Gebruik “Back-upbestand” om naar een nieuw apparaat te verhuizen.",editTitle:"Aantallen bewerken",editHint:"Als je hierboven een jaar kiest, wordt elk gebed automatisch berekend (jaren × 365 dagen). Hier kun je elk apart bijstellen — bijv. +2-3 dagen voor schrikkeljaren, of vrijgestelde dagen aftrekken.",setAllLabel:"Alles instellen op:",setAllPh:"bijv. 3287",apply:"Toepassen",cancel:"Annuleren",saveBtn:"Opslaan",bkTitle:"Back-upbestand",bkHint:"Je gegevens staan op dit apparaat. Dit is een extra kopie — plak in Notities of download. Plak het hier om te herstellen op een nieuw apparaat.",bkCopy:"Kopiëren",bkDownload:"Bestand downloaden",bkRestore:"Herstellen",bkClose:"Sluiten",instTitle:"Aan beginscherm toevoegen",iosHint:"Op iPhone staat Safari automatisch toevoegen niet toe, maar het duurt enkele seconden:",iosSteps:["Open deze pagina in <b>Safari</b>.","Tik op de <b>Deel</b>-knop (vierkant met pijl omhoog).","Kies <b>Zet op beginscherm</b> → <b>Voeg toe</b>."],androidHint:"Voeg het snel toe via het browsermenu:",androidSteps:["Tik op het <b>⋮</b>-menu (rechtsboven).","<b>Toevoegen aan beginscherm</b> (of <b>App installeren</b>) → bevestig."],inappNote:"Let op: deze pagina is mogelijk geopend in de browser van een app. Open hem eerst in Safari/Chrome en voeg hem dan toe.",ok:"Oké",completed:"Voltooid ✓",remaining:"Resterend <b>{n}</b>",allDone:"Alles voltooid — moge Allah het aanvaarden 🤲",wajib:"wadjib",prayers:["Fajr","Dhuhr","Asr","Maghrib","Isha","Witr"],yearU:{one:"jaar",other:"jaar"},dayU:{one:"dag",other:"dagen"},save:{loading:"Laden…",saving:"Opslaan…",cloud:"✓ Geback-upt",local:"✓ Opgeslagen",warn:"⚠ Opslagprobleem — maak back-up"},etaTpl:"→ ~{days} {day}, geschat klaar {date}",tDayAdded:"Een dag toegevoegd",tInvalidNum:"Voer een geldig getal in",tSaved:"Opgeslagen",tCopied:"Gekopieerd",tDownloading:"Bestand downloaden",tDownloadFail:"Downloaden mislukt",tReadFail:"Kan gegevens niet lezen",tRestored:"Hersteld",tReset:"Gewist",tYearSet:"{y} {yr} · elk gebed {n}",tInstalled:"Toegevoegd aan beginscherm",resetConfirm:"Alle voortgang wordt gewist. Weet je het zeker?\n(Tik op Annuleren als je eerst een back-up wilt.)",numsep:".",percentBefore:false},
+  fr:{htmlTitle:"Suivi des prières à rattraper",h1:"Prières à rattraper",eyebrow:"{y} an(s) de rattrapage · 5 prières + Witr",lead:"Coche au fur et à mesure, vois ce qu’il reste. Ta progression est enregistrée automatiquement sur cet appareil.",ybLabel:"Durée à rattraper",ybSub:"Combien d’années de prières rattrapes-tu ? (années × 365 jours)",heroLabel:"Prières restantes",remainUnit:"prières restantes",sub:"<b>{done}</b> faites · <b>{total}</b> au total",paceLabel:"Par jour",secPrayers:"Prières",dayBtn:"+ Terminer une journée",dayBtnSub:"(5 quotidiennes + Witr)",installBtn:"Ajouter à l’écran d’accueil",installBtnSub:"ouvrir comme une app",editBtn:"Modifier les nombres",backupBtn:"Sauvegarde",resetBtn:"Tout réinitialiser",saveNote:"Ta progression est <b>enregistrée automatiquement</b> sur cet appareil. Utilise « Sauvegarde » pour la transférer sur un nouvel appareil.",editTitle:"Modifier les nombres",editHint:"Choisir une durée ci-dessus calcule chaque prière automatiquement (années × 365 jours). Ajuste-les ici une à une — par ex. +2-3 jours pour les années bissextiles, ou en retirant les jours dispensés.",setAllLabel:"Tout régler sur :",setAllPh:"ex. 3287",apply:"Appliquer",cancel:"Annuler",saveBtn:"Enregistrer",bkTitle:"Sauvegarde",bkHint:"Tes données sont sur cet appareil. Ceci est une copie supplémentaire — colle-la dans Notes ou télécharge-la. Colle-la ici pour restaurer sur un nouvel appareil.",bkCopy:"Copier",bkDownload:"Télécharger",bkRestore:"Restaurer",bkClose:"Fermer",instTitle:"Ajouter à l’écran d’accueil",iosHint:"Sur iPhone, Safari n’autorise pas l’ajout automatique, mais c’est l’affaire de quelques secondes :",iosSteps:["Ouvre cette page dans <b>Safari</b>.","Touche le bouton <b>Partager</b> (carré avec une flèche).","Choisis <b>Sur l’écran d’accueil</b> → <b>Ajouter</b>."],androidHint:"Ajoute-la vite depuis le menu du navigateur :",androidSteps:["Touche le menu <b>⋮</b> (en haut à droite).","<b>Ajouter à l’écran d’accueil</b> (ou <b>Installer l’appli</b>) → confirme."],inappNote:"Remarque : cette page est peut-être ouverte dans le navigateur d’une appli. Ouvre-la d’abord dans Safari/Chrome, puis ajoute-la.",ok:"OK",completed:"Terminé ✓",remaining:"Reste <b>{n}</b>",allDone:"Tout est terminé — qu’Allah l’accepte 🤲",wajib:"wajib",prayers:["Fajr","Dohr","Asr","Maghreb","Icha","Witr"],yearU:{one:"an",other:"ans"},dayU:{one:"jour",other:"jours"},save:{loading:"Chargement…",saving:"Enregistrement…",cloud:"✓ Sauvegardé",local:"✓ Enregistré",warn:"⚠ Problème — fais une sauvegarde"},etaTpl:"→ ~{days} {day}, fin estimée {date}",tDayAdded:"Une journée ajoutée",tInvalidNum:"Saisis un nombre valide",tSaved:"Enregistré",tCopied:"Copié",tDownloading:"Téléchargement",tDownloadFail:"Échec du téléchargement",tReadFail:"Lecture impossible",tRestored:"Restauré",tReset:"Réinitialisé",tYearSet:"{y} {yr} · chaque prière {n}",tInstalled:"Ajouté à l’écran d’accueil",resetConfirm:"Toute la progression sera réinitialisée. Es-tu sûr ?\n(Touche Annuler si tu veux d’abord sauvegarder.)",numsep:" ",percentBefore:false},
+  de:{htmlTitle:"Nachhol-Gebete-Tracker",h1:"Nachhol-Gebete",eyebrow:"{y} Jahr(e) nachholen · 5 täglich + Witr",lead:"Hake ab, während du betest, und sieh, was übrig ist. Dein Fortschritt wird automatisch auf diesem Gerät gespeichert.",ybLabel:"Nachholzeitraum",ybSub:"Wie viele Jahre Gebete holst du nach? (Jahre × 365 Tage)",heroLabel:"Verbleibende Gebete",remainUnit:"Gebete übrig",sub:"<b>{done}</b> erledigt · <b>{total}</b> gesamt",paceLabel:"Pro Tag",secPrayers:"Gebete",dayBtn:"+ Einen Tag abschließen",dayBtnSub:"(5 täglich + Witr)",installBtn:"Zum Startbildschirm",installBtnSub:"wie eine App öffnen",editBtn:"Zahlen bearbeiten",backupBtn:"Sicherungsdatei",resetBtn:"Alles zurücksetzen",saveNote:"Dein Fortschritt wird <b>automatisch gespeichert</b> auf diesem Gerät. Mit „Sicherungsdatei“ überträgst du ihn auf ein neues Gerät.",editTitle:"Zahlen bearbeiten",editHint:"Wenn du oben Jahre wählst, wird jedes Gebet automatisch berechnet (Jahre × 365 Tage). Hier kannst du einzeln feinjustieren — z. B. +2-3 Tage für Schaltjahre oder befreite Tage abziehen.",setAllLabel:"Alle setzen auf:",setAllPh:"z. B. 3287",apply:"Anwenden",cancel:"Abbrechen",saveBtn:"Speichern",bkTitle:"Sicherungsdatei",bkHint:"Deine Daten liegen auf diesem Gerät. Dies ist eine zusätzliche Kopie — füge sie in Notizen ein oder lade sie herunter. Hier einfügen, um auf einem neuen Gerät wiederherzustellen.",bkCopy:"Kopieren",bkDownload:"Datei herunterladen",bkRestore:"Wiederherstellen",bkClose:"Schließen",instTitle:"Zum Startbildschirm hinzufügen",iosHint:"Auf dem iPhone erlaubt Safari kein automatisches Hinzufügen, aber es dauert nur Sekunden:",iosSteps:["Öffne diese Seite in <b>Safari</b>.","Tippe auf <b>Teilen</b> (Quadrat mit Pfeil nach oben).","Wähle <b>Zum Home-Bildschirm</b> → <b>Hinzufügen</b>."],androidHint:"Schnell über das Browsermenü hinzufügen:",androidSteps:["Tippe auf das <b>⋮</b>-Menü (oben rechts).","<b>Zum Startbildschirm</b> (oder <b>App installieren</b>) → bestätigen."],inappNote:"Hinweis: Diese Seite ist evtl. im Browser einer App geöffnet. Öffne sie zuerst in Safari/Chrome und füge sie dann hinzu.",ok:"OK",completed:"Abgeschlossen ✓",remaining:"Übrig <b>{n}</b>",allDone:"Alles abgeschlossen — möge Allah es annehmen 🤲",wajib:"wadschib",prayers:["Fajr","Dhuhr","Asr","Maghrib","Ischa","Witr"],yearU:{one:"Jahr",other:"Jahre"},dayU:{one:"Tag",other:"Tage"},save:{loading:"Laden…",saving:"Speichern…",cloud:"✓ Gesichert",local:"✓ Gespeichert",warn:"⚠ Speicherproblem — sichern"},etaTpl:"→ ~{days} {day}, geschätztes Ende {date}",tDayAdded:"Ein Tag hinzugefügt",tInvalidNum:"Gib eine gültige Zahl ein",tSaved:"Gespeichert",tCopied:"Kopiert",tDownloading:"Datei wird geladen",tDownloadFail:"Download fehlgeschlagen",tReadFail:"Daten nicht lesbar",tRestored:"Wiederhergestellt",tReset:"Zurückgesetzt",tYearSet:"{y} {yr} · jedes Gebet {n}",tInstalled:"Zum Startbildschirm hinzugefügt",resetConfirm:"Der gesamte Fortschritt wird zurückgesetzt. Bist du sicher?\n(Tippe auf Abbrechen, wenn du zuerst sichern willst.)",numsep:".",percentBefore:false},
+  ar:{htmlTitle:"متتبّع صلوات القضاء",h1:"متتبّع صلوات القضاء",eyebrow:"قضاء {y} سنة · 5 صلوات + وتر",lead:"أشّر أثناء الصلاة وشاهد المتبقّي. يُحفظ تقدّمك تلقائيًا على هذا الجهاز.",ybLabel:"مدة القضاء",ybSub:"كم سنة من الصلوات تقضيها؟ (سنوات × 365 يومًا)",heroLabel:"الصلوات المتبقّية",remainUnit:"صلاة متبقّية",sub:"<b>{done}</b> مؤدّاة · المجموع <b>{total}</b>",paceLabel:"يوميًا",secPrayers:"الصلوات",dayBtn:"+ أكمِل يومًا",dayBtnSub:"(5 صلوات + وتر)",installBtn:"أضِف إلى الشاشة الرئيسية",installBtnSub:"افتحه كتطبيق",editBtn:"تعديل الأرقام",backupBtn:"ملف النسخ الاحتياطي",resetBtn:"إعادة تعيين الكل",saveNote:"يُحفظ تقدّمك <b>تلقائيًا</b> على هذا الجهاز. استخدم «ملف النسخ الاحتياطي» لنقله إلى جهاز جديد.",editTitle:"تعديل الأرقام",editHint:"عند اختيار السنوات بالأعلى تُحسب كل صلاة تلقائيًا (سنوات × 365 يومًا). يمكنك الضبط الدقيق هنا لكل صلاة — مثل +2-3 أيام للسنوات الكبيسة أو طرح الأيام المُعفاة.",setAllLabel:"اضبط الكل على:",setAllPh:"مثال 3287",apply:"تطبيق",cancel:"إلغاء",saveBtn:"حفظ",bkTitle:"ملف النسخ الاحتياطي",bkHint:"بياناتك على هذا الجهاز. هذه نسخة إضافية — الصقها في الملاحظات أو نزّلها. الصقها هنا للاستعادة على جهاز جديد.",bkCopy:"نسخ",bkDownload:"تنزيل الملف",bkRestore:"استعادة",bkClose:"إغلاق",instTitle:"أضِف إلى الشاشة الرئيسية",iosHint:"في آيفون لا يسمح سفاري بالإضافة التلقائية، لكنها تستغرق ثوانٍ:",iosSteps:["افتح هذه الصفحة في <b>سفاري</b>.","اضغط زر <b>المشاركة</b> (مربّع بسهم لأعلى).","اختر <b>إضافة إلى الشاشة الرئيسية</b> ← <b>إضافة</b>."],androidHint:"أضِفها بسرعة من قائمة المتصفّح:",androidSteps:["اضغط قائمة <b>⋮</b> (أعلى اليمين).","<b>إضافة إلى الشاشة الرئيسية</b> (أو <b>تثبيت التطبيق</b>) ← أكّد."],inappNote:"ملاحظة: قد تكون هذه الصفحة مفتوحة داخل متصفّح تطبيق. افتحها أولًا في سفاري/كروم ثم أضِفها.",ok:"حسنًا",completed:"اكتمل ✓",remaining:"المتبقّي <b>{n}</b>",allDone:"اكتمل كل شيء — تقبّل الله 🤲",wajib:"واجب",prayers:["الفجر","الظهر","العصر","المغرب","العشاء","الوتر"],yearU:{one:"سنة",other:"سنة"},dayU:{one:"يوم",other:"يوم"},save:{loading:"جارٍ التحميل…",saving:"جارٍ الحفظ…",cloud:"✓ تم النسخ الاحتياطي",local:"✓ تم الحفظ",warn:"⚠ مشكلة في الحفظ — خذ نسخة احتياطية"},etaTpl:"حوالي {days} {day}، الانتهاء المتوقّع {date}",tDayAdded:"أُضيف يوم",tInvalidNum:"أدخل رقمًا صحيحًا",tSaved:"تم الحفظ",tCopied:"تم النسخ",tDownloading:"جارٍ التنزيل",tDownloadFail:"تعذّر التنزيل",tReadFail:"تعذّرت قراءة البيانات",tRestored:"تمت الاستعادة",tReset:"تمت إعادة التعيين",tYearSet:"{y} {yr} · كل صلاة {n}",tInstalled:"أُضيف إلى الشاشة الرئيسية",resetConfirm:"ستتم إعادة تعيين كل التقدّم. هل أنت متأكد؟\n(اضغط إلغاء إذا أردت أخذ نسخة احتياطية أولًا.)",numsep:",",percentBefore:false},
+  fa:{htmlTitle:"پیگیری نماز قضا",h1:"پیگیری نماز قضا",eyebrow:"قضای {y} سال · 5 نماز + وتر",lead:"هنگام خواندن علامت بزن و باقی‌مانده را ببین. پیشرفت تو روی این دستگاه به‌طور خودکار ذخیره می‌شود.",ybLabel:"مدت قضا",ybSub:"چند سال نماز قضا داری؟ (سال × 365 روز)",heroLabel:"نمازهای باقی‌مانده",remainUnit:"نماز باقی مانده",sub:"<b>{done}</b> خوانده‌شده · مجموع <b>{total}</b>",paceLabel:"روزانه",secPrayers:"نمازها",dayBtn:"+ یک روز را کامل کن",dayBtnSub:"(5 نماز + وتر)",installBtn:"افزودن به صفحه اصلی",installBtnSub:"مثل یک برنامه باز کن",editBtn:"ویرایش اعداد",backupBtn:"فایل پشتیبان",resetBtn:"بازنشانی همه",saveNote:"پیشرفت تو <b>به‌طور خودکار</b> روی این دستگاه ذخیره می‌شود. برای انتقال به دستگاه جدید از «فایل پشتیبان» استفاده کن.",editTitle:"ویرایش اعداد",editHint:"وقتی بالا سال را انتخاب کنی، هر نماز خودکار حساب می‌شود (سال × 365 روز). اینجا می‌توانی تک‌تک تنظیم کنی — مثلاً +2-3 روز برای سال کبیسه یا کم‌کردن روزهای معاف.",setAllLabel:"همه را تنظیم کن روی:",setAllPh:"مثلاً 3287",apply:"اعمال",cancel:"انصراف",saveBtn:"ذخیره",bkTitle:"فایل پشتیبان",bkHint:"داده‌های تو روی این دستگاه است. این یک نسخه اضافی است — در یادداشت‌ها بچسبان یا دانلود کن. برای بازیابی در دستگاه جدید اینجا بچسبان.",bkCopy:"کپی",bkDownload:"دانلود فایل",bkRestore:"بازیابی",bkClose:"بستن",instTitle:"افزودن به صفحه اصلی",iosHint:"در آیفون سافاری اجازه افزودن خودکار نمی‌دهد، اما چند ثانیه طول می‌کشد:",iosSteps:["این صفحه را در <b>سافاری</b> باز کن.","دکمه <b>اشتراک‌گذاری</b> را بزن (مربع با فلش رو به بالا).","<b>افزودن به صفحه اصلی</b> ← <b>افزودن</b> را انتخاب کن."],androidHint:"از منوی مرورگر سریع اضافه کن:",androidSteps:["منوی <b>⋮</b> (بالا سمت راست) را بزن.","<b>افزودن به صفحه اصلی</b> (یا <b>نصب برنامه</b>) ← تأیید کن."],inappNote:"توجه: این صفحه ممکن است داخل مرورگر یک برنامه باز شده باشد. ابتدا در سافاری/کروم باز کن، سپس اضافه کن.",ok:"باشه",completed:"تمام شد ✓",remaining:"باقی‌مانده <b>{n}</b>",allDone:"همه تمام شد — خدا قبول کند 🤲",wajib:"واجب",prayers:["صبح","ظهر","عصر","مغرب","عشا","وتر"],yearU:{one:"سال",other:"سال"},dayU:{one:"روز",other:"روز"},save:{loading:"در حال بارگذاری…",saving:"در حال ذخیره…",cloud:"✓ پشتیبان‌گیری شد",local:"✓ ذخیره شد",warn:"⚠ مشکل ذخیره — پشتیبان بگیر"},etaTpl:"حدود {days} {day}، پایان تخمینی {date}",tDayAdded:"یک روز اضافه شد",tInvalidNum:"یک عدد معتبر وارد کن",tSaved:"ذخیره شد",tCopied:"کپی شد",tDownloading:"در حال دانلود",tDownloadFail:"دانلود نشد",tReadFail:"داده خوانده نشد",tRestored:"بازیابی شد",tReset:"بازنشانی شد",tYearSet:"{y} {yr} · هر نماز {n}",tInstalled:"به صفحه اصلی اضافه شد",resetConfirm:"همه پیشرفت بازنشانی می‌شود. مطمئنی؟\n(اگر می‌خواهی اول پشتیبان بگیری، انصراف را بزن.)",numsep:",",percentBefore:false},
+  };
+
+  var T=I18N.tr;
+  var $=function(id){return document.getElementById(id);};
+  var cardsEl=$("cards"),heroFill=$("heroFill"),pctEl=$("pct"),remainBig=$("remainBig"),subLine=$("subLine"),etaEl=$("eta"),dayBtn=$("dayBtn"),toastEl=$("toast"),savebar=$("savebar"),saveTxt=$("saveTxt"),eyebrowEl=$("eyebrow"),yearSel=$("yearSel"),langSel=$("langSel");
 
   function clampYears(y){ y=Math.floor(y||0); if(y<1)y=1; if(y>MAX_YEARS)y=MAX_YEARS; return y; }
-  function makeDefault(){
-    var y=DEFAULT_YEARS;
-    var s = { years:y, targets:{}, done:{}, pace:1, v:3 };
-    PRAYERS.forEach(function(p){ s.targets[p.id]=y*DPY; s.done[p.id]=0; });
-    return s;
-  }
-  function merge(base, s){
-    if(!s) return base;
-    PRAYERS.forEach(function(p){
-      if(s.targets && typeof s.targets[p.id]==="number") base.targets[p.id]=Math.max(0,Math.floor(s.targets[p.id]));
-      if(s.done && typeof s.done[p.id]==="number") base.done[p.id]=Math.max(0,Math.floor(s.done[p.id]));
-    });
-    if(s.pace) base.pace=s.pace;
-    if(typeof s.years==="number") base.years=clampYears(s.years);
-    else base.years=clampYears(Math.round((base.targets.sabah||0)/DPY) || DEFAULT_YEARS);
-    return base;
-  }
+  function detectLang(){ var n=(navigator.language||"tr").slice(0,2).toLowerCase(); for(var i=0;i<LANGS.length;i++){ if(LANGS[i].code===n) return n; } return "tr"; }
+  function makeDefault(){ var y=DEFAULT_YEARS; var s={lang:detectLang(),years:y,targets:{},done:{},pace:1,v:3}; PRAYER_IDS.forEach(function(p){ s.targets[p]=y*DPY; s.done[p]=0; }); return s; }
+  function merge(base,s){ if(!s) return base; PRAYER_IDS.forEach(function(p){ if(s.targets&&typeof s.targets[p]==="number") base.targets[p]=Math.max(0,Math.floor(s.targets[p])); if(s.done&&typeof s.done[p]==="number") base.done[p]=Math.max(0,Math.floor(s.done[p])); }); if(s.pace) base.pace=s.pace; if(s.lang&&I18N[s.lang]) base.lang=s.lang; if(typeof s.years==="number") base.years=clampYears(s.years); else base.years=clampYears(Math.round((base.targets.sabah||0)/DPY)||DEFAULT_YEARS); return base; }
 
-  var state = makeDefault();
+  var state=makeDefault();
 
-  var $ = function(id){ return document.getElementById(id); };
-  var cardsEl=$("cards"), heroFill=$("heroFill"), pctEl=$("pct"),
-      remainBig=$("remainBig"), doneTotal=$("doneTotal"), grandTotal=$("grandTotal"),
-      etaEl=$("eta"), dayBtn=$("dayBtn"), toastEl=$("toast"),
-      savebar=$("savebar"), saveTxt=$("saveTxt"),
-      eyebrowEl=$("eyebrow"), yearSel=$("yearSel");
+  function tpl(str,obj){ return String(str).replace(/\{(\w+)\}/g,function(_,k){ return obj[k]!=null?obj[k]:""; }); }
+  function fmt(n){ var s=String(Math.round(n)); return s.replace(/\B(?=(\d{3})+(?!\d))/g,T.numsep); }
+  function pctStr(p){ return T.percentBefore?"%"+p:p+"%"; }
+  function fmtDate(d){ try{ return d.toLocaleDateString(LOCALE[state.lang]||"en",{day:"numeric",month:"long",year:"numeric",numberingSystem:"latn",calendar:"gregory"}); }catch(e){ return d.toLocaleDateString(); } }
 
-  // ---- status chip ----
-  function setStatus(kind){
-    savebar.className="savebar";
-    if(kind==="loading"){ saveTxt.textContent="Yükleniyor…"; }
-    else if(kind==="saving"){ savebar.classList.add("saving"); saveTxt.textContent="Kaydediliyor…"; }
-    else if(kind==="cloud"){ savebar.classList.add("saved"); saveTxt.textContent="\u2713 Otomatik yedeklendi"; }
-    else if(kind==="local"){ savebar.classList.add("saved"); saveTxt.textContent="\u2713 Bu cihaza kaydedildi"; }
-    else if(kind==="warn"){ savebar.classList.add("warn"); saveTxt.textContent="\u26A0 Kayıt sorunu — yedek al"; }
-  }
-
-  // ---- persistence ----
-  function localMirror(){ try{ localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); }catch(e){} }
-  var cloudTimer=null;
-  function scheduleSave(){
-    localMirror();
-    setStatus("saving");
-    if(cloudTimer) clearTimeout(cloudTimer);
-    cloudTimer=setTimeout(flushSave,450);
-  }
-  function flushSave(){
-    if(cloudTimer){ clearTimeout(cloudTimer); cloudTimer=null; }
-    if(hasCloud){
-      try{
-        Promise.resolve(window.storage.set(STORE_KEY, JSON.stringify(state)))
-          .then(function(){ setStatus("cloud"); })
-          .catch(function(){ setStatus(localOk()?"local":"warn"); });
-      }catch(e){ setStatus(localOk()?"local":"warn"); }
-    }else{
-      setStatus(localOk()?"local":"warn");
-    }
-  }
-  function localOk(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } }
-
-  async function loadState(){
-    var base = makeDefault();
-    if(hasCloud){
-      try{
-        var res = await window.storage.get(STORE_KEY);
-        if(res && res.value){ return merge(base, JSON.parse(res.value)); }
-      }catch(e){ /* missing key throws -> ignore */ }
-    }
-    try{
-      var raw = localStorage.getItem(LOCAL_KEY);
-      if(raw){ return merge(base, JSON.parse(raw)); }
-    }catch(e){}
-    return base;
-  }
-
-  // flush before leaving / backgrounding
-  document.addEventListener("visibilitychange", function(){ if(document.visibilityState==="hidden") flushSave(); });
-  window.addEventListener("pagehide", flushSave);
-
-  // ---- build cards ----
-  PRAYERS.forEach(function(p){
-    var c=document.createElement("div");
-    c.className="card"; c.id="card-"+p.id; c.style.setProperty("--a",p.a);
-    c.innerHTML=
-      '<div class="card-head">'+
-        '<span class="dot"></span>'+
-        '<div class="names"><div class="tr">'+p.tr+(p.tag?' <span class="badge">'+p.tag+'</span>':'')+'</div><div class="ar">'+p.ar+'</div></div>'+
-        '<div class="count"><span class="now" id="now-'+p.id+'">—</span><span class="of"> / <span id="tgt-'+p.id+'">—</span></span></div>'+
-      '</div>'+
-      '<div class="meter"><i id="fill-'+p.id+'"></i></div>'+
-      '<div class="row">'+
-        '<span class="left-note" id="note-'+p.id+'"></span>'+
-        '<button class="btn minus" data-act="dec" data-id="'+p.id+'" aria-label="'+p.tr+' bir azalt">\u2212</button>'+
-        '<button class="btn plus" data-act="inc" data-id="'+p.id+'" aria-label="'+p.tr+' bir ekle">+1</button>'+
-        '<button class="btn plus lg" data-act="inc5" data-id="'+p.id+'" aria-label="'+p.tr+' beş ekle">+5</button>'+
-      '</div>';
+  PRAYER_IDS.forEach(function(p){
+    var c=document.createElement("div"); c.className="card"; c.id="card-"+p; c.style.setProperty("--a",ACCENT[p]);
+    c.innerHTML='<div class="card-head"><span class="dot"></span><div class="names"><div class="tr"><span id="nm-'+p+'"></span>'+(p==="vitir"?' <span class="badge" id="vitirBadge"></span>':'')+'</div><div class="ar" id="ar-'+p+'">'+ARABIC[p]+'</div></div><div class="count"><span class="now" id="now-'+p+'">—</span><span class="of"> / <span id="tgt-'+p+'">—</span></span></div></div><div class="meter"><i id="fill-'+p+'"></i></div><div class="row"><span class="left-note" id="note-'+p+'"></span><button class="btn minus" data-act="dec" data-id="'+p+'">−</button><button class="btn plus" data-act="inc" data-id="'+p+'">+1</button><button class="btn plus lg" data-act="inc5" data-id="'+p+'">+5</button></div>';
     cardsEl.appendChild(c);
   });
 
-  // ---- year selector ----
-  (function buildYears(){
-    var html="";
-    for(var y=1;y<=MAX_YEARS;y++){ html+='<option value="'+y+'">'+y+' yıl</option>'; }
-    yearSel.innerHTML=html;
-  })();
-  function syncYearUI(){ yearSel.value=String(state.years); }
-  yearSel.addEventListener("change", function(){
-    var y=clampYears(parseInt(yearSel.value,10));
-    state.years=y;
-    PRAYERS.forEach(function(p){
-      state.targets[p.id]=y*DPY;
-      if(state.done[p.id]>state.targets[p.id]) state.done[p.id]=state.targets[p.id];
-    });
-    render(); scheduleSave();
-    toast(y+" yıl · her namaz "+fmt(y*DPY));
-  });
+  var editFields=$("editFields");
+  PRAYER_IDS.forEach(function(p){ var row=document.createElement("div"); row.className="field"; row.innerHTML='<label><span class="fdot" style="background:'+ACCENT[p]+'"></span><span id="el-'+p+'"></span></label><input type="number" inputmode="numeric" min="0" id="edit-'+p+'">'; editFields.appendChild(row); });
 
-  function fmt(n){ return n.toLocaleString("tr-TR"); }
+  (function(){ var h=""; for(var i=0;i<LANGS.length;i++){ h+='<option value="'+LANGS[i].code+'">'+LANGS[i].label+'</option>'; } langSel.innerHTML=h; })();
+  function buildYearOptions(){ var h="",u; for(var y=1;y<=MAX_YEARS;y++){ u=(y===1?T.yearU.one:T.yearU.other); h+='<option value="'+y+'">'+y+' '+u+'</option>'; } yearSel.innerHTML=h; yearSel.value=String(state.years); }
+
+  function setStatus(kind){ savebar.className="savebar"; if(kind==="loading") saveTxt.textContent=T.save.loading; else if(kind==="saving"){ savebar.classList.add("saving"); saveTxt.textContent=T.save.saving; } else if(kind==="cloud"){ savebar.classList.add("saved"); saveTxt.textContent=T.save.cloud; } else if(kind==="local"){ savebar.classList.add("saved"); saveTxt.textContent=T.save.local; } else if(kind==="warn"){ savebar.classList.add("warn"); saveTxt.textContent=T.save.warn; } }
+
+  function applyI18n(){
+    T=I18N[state.lang]||I18N.tr;
+    document.documentElement.setAttribute("lang",state.lang);
+    document.documentElement.setAttribute("dir",RTL[state.lang]?"rtl":"ltr");
+    document.title=T.htmlTitle;
+    var a=document.querySelectorAll("[data-i18n]"),i;
+    for(i=0;i<a.length;i++){ var k=a[i].getAttribute("data-i18n"); if(T[k]!=null) a[i].textContent=T[k]; }
+    var b=document.querySelectorAll("[data-i18n-html]");
+    for(i=0;i<b.length;i++){ var kh=b[i].getAttribute("data-i18n-html"); if(T[kh]!=null) b[i].innerHTML=T[kh]; }
+    var c=document.querySelectorAll("[data-i18n-ph]");
+    for(i=0;i<c.length;i++){ var kp=c[i].getAttribute("data-i18n-ph"); if(T[kp]!=null) c[i].setAttribute("placeholder",T[kp]); }
+    PRAYER_IDS.forEach(function(p,idx){ var nm=$("nm-"+p); if(nm) nm.textContent=T.prayers[idx]; var ar=$("ar-"+p); if(ar) ar.style.display=RTL[state.lang]?"none":""; var el=$("el-"+p); if(el) el.textContent=T.prayers[idx]; });
+    var vb=$("vitirBadge"); if(vb) vb.textContent=T.wajib;
+    var segs=document.querySelectorAll(".pace .seg button"),s;
+    for(s=0;s<segs.length;s++){ var v=parseInt(segs[s].getAttribute("data-pace"),10); segs[s].textContent=v+" "+(v===1?T.dayU.one:T.dayU.other); }
+    var il=$("iosList"); if(il) il.innerHTML=T.iosSteps.map(function(x){return "<li>"+x+"</li>";}).join("");
+    var al=$("androidList"); if(al) al.innerHTML=T.androidSteps.map(function(x){return "<li>"+x+"</li>";}).join("");
+    buildYearOptions();
+    langSel.value=state.lang;
+    render();
+  }
 
   function render(){
-    var done=0,tgt=0,anyRemaining=0;
-    PRAYERS.forEach(function(p){
-      var d=state.done[p.id], t=state.targets[p.id];
-      done+=d; tgt+=t;
-      var rem=Math.max(0,t-d); if(rem>anyRemaining) anyRemaining=rem;
+    var done=0,tgt=0,anyRem=0;
+    PRAYER_IDS.forEach(function(p){
+      var d=state.done[p],t=state.targets[p]; done+=d; tgt+=t;
+      var rem=Math.max(0,t-d); if(rem>anyRem) anyRem=rem;
       var pc=t>0?Math.min(100,d/t*100):100;
-      $("now-"+p.id).textContent=fmt(d);
-      $("tgt-"+p.id).textContent=fmt(t);
-      $("fill-"+p.id).style.width=pc+"%";
-      var note=$("note-"+p.id), card=$("card-"+p.id);
-      var dec=card.querySelector('[data-act="dec"]'), inc=card.querySelector('[data-act="inc"]'), inc5=card.querySelector('[data-act="inc5"]');
-      if(rem<=0 && t>0){
-        note.textContent="Tamamlandı \u2713"; note.className="left-note complete";
-        card.classList.add("done"); inc.disabled=true; inc5.disabled=true;
-      }else{
-        note.innerHTML="Kalan <b>"+fmt(rem)+"</b>"; note.className="left-note";
-        card.classList.remove("done"); inc.disabled=false; inc5.disabled=false;
-      }
+      var nw=$("now-"+p); if(nw) nw.textContent=fmt(d);
+      var tg=$("tgt-"+p); if(tg) tg.textContent=fmt(t);
+      var fl=$("fill-"+p); if(fl) fl.style.width=pc+"%";
+      var note=$("note-"+p),card=$("card-"+p);
+      var dec=card.querySelector('[data-act="dec"]'),inc=card.querySelector('[data-act="inc"]'),inc5=card.querySelector('[data-act="inc5"]');
+      if(rem<=0&&t>0){ note.innerHTML=T.completed; note.className="left-note complete"; card.classList.add("done"); inc.disabled=true; inc5.disabled=true; }
+      else{ note.innerHTML=tpl(T.remaining,{n:fmt(rem)}); note.className="left-note"; card.classList.remove("done"); inc.disabled=false; inc5.disabled=false; }
       dec.disabled=d<=0;
     });
-    var remain=Math.max(0,tgt-done);
-    var pct=tgt>0?Math.round(done/tgt*100):0;
+    var remain=Math.max(0,tgt-done),pct=tgt>0?Math.round(done/tgt*100):0;
     remainBig.textContent=fmt(remain);
-    doneTotal.textContent=fmt(done);
-    grandTotal.textContent=fmt(tgt);
-    pctEl.textContent="%"+pct;
+    if(subLine) subLine.innerHTML=tpl(T.sub,{done:fmt(done),total:fmt(tgt)});
+    pctEl.textContent=pctStr(pct);
     heroFill.style.width=(tgt>0?done/tgt*100:0)+"%";
-    if(eyebrowEl) eyebrowEl.textContent=fmt(state.years)+" yıllık telafi · 5 vakit + vitir";
-    dayBtn.disabled=(anyRemaining<=0);
-    if(remain<=0){
-      etaEl.innerHTML="Hepsi tamamlandı \u2014 Allah kabul etsin \uD83E\uDD32";
-    }else{
-      var days=Math.ceil(anyRemaining/state.pace);
-      var dd=new Date(); dd.setDate(dd.getDate()+days);
-      var ds=dd.toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"});
-      etaEl.innerHTML="\u2192 ~<b>"+fmt(days)+"</b> gün, tahmini bitiş <b>"+ds+"</b>";
-    }
+    if(eyebrowEl) eyebrowEl.textContent=tpl(T.eyebrow,{y:state.years});
+    dayBtn.disabled=(anyRem<=0);
+    if(remain<=0){ etaEl.textContent=T.allDone; }
+    else{ var days=Math.ceil(anyRem/state.pace); var dd=new Date(); dd.setDate(dd.getDate()+days); etaEl.textContent=tpl(T.etaTpl,{days:fmt(days),day:(days===1?T.dayU.one:T.dayU.other),date:fmtDate(dd)}); }
   }
 
-  function bump(id,n){
-    var t=state.targets[id];
-    state.done[id]=Math.max(0,Math.min(t,state.done[id]+n));
-    render(); scheduleSave();
-  }
+  function bump(id,n){ var t=state.targets[id]; state.done[id]=Math.max(0,Math.min(t,state.done[id]+n)); render(); scheduleSave(); }
+  cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")bump(id,1); else if(act==="inc5")bump(id,5); else if(act==="dec")bump(id,-1); });
+  dayBtn.addEventListener("click",function(){ var ch=false; PRAYER_IDS.forEach(function(p){ if(state.done[p]<state.targets[p]){ state.done[p]++; ch=true; } }); if(ch){ render(); scheduleSave(); toast(T.tDayAdded); } });
 
-  cardsEl.addEventListener("click", function(e){
-    var b=e.target.closest("button[data-act]"); if(!b) return;
-    var id=b.getAttribute("data-id"), act=b.getAttribute("data-act");
-    if(act==="inc") bump(id,1); else if(act==="inc5") bump(id,5); else if(act==="dec") bump(id,-1);
-  });
+  document.querySelectorAll(".pace .seg button").forEach(function(btn){ btn.addEventListener("click",function(){ document.querySelectorAll(".pace .seg button").forEach(function(x){x.setAttribute("aria-pressed","false");}); btn.setAttribute("aria-pressed","true"); state.pace=parseInt(btn.getAttribute("data-pace"),10); render(); scheduleSave(); }); });
+  function syncPaceUI(){ document.querySelectorAll(".pace .seg button").forEach(function(btn){ btn.setAttribute("aria-pressed",parseInt(btn.getAttribute("data-pace"),10)===state.pace?"true":"false"); }); }
 
-  dayBtn.addEventListener("click", function(){
-    var changed=false;
-    PRAYERS.forEach(function(p){ if(state.done[p.id]<state.targets[p.id]){ state.done[p.id]++; changed=true; } });
-    if(changed){ render(); scheduleSave(); toast("Bir gün eklendi"); }
-  });
+  yearSel.addEventListener("change",function(){ var y=clampYears(parseInt(yearSel.value,10)); state.years=y; PRAYER_IDS.forEach(function(p){ state.targets[p]=y*DPY; if(state.done[p]>state.targets[p]) state.done[p]=state.targets[p]; }); render(); scheduleSave(); toast(tpl(T.tYearSet,{y:y,yr:(y===1?T.yearU.one:T.yearU.other),n:fmt(y*DPY)})); });
+  langSel.addEventListener("change",function(){ var l=langSel.value; if(I18N[l]){ state.lang=l; applyI18n(); scheduleSave(); } });
 
-  document.querySelectorAll(".pace .seg button").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      document.querySelectorAll(".pace .seg button").forEach(function(x){x.setAttribute("aria-pressed","false");});
-      btn.setAttribute("aria-pressed","true");
-      state.pace=parseInt(btn.getAttribute("data-pace"),10);
-      render(); scheduleSave();
-    });
-  });
-  function syncPaceUI(){
-    document.querySelectorAll(".pace .seg button").forEach(function(btn){
-      btn.setAttribute("aria-pressed", parseInt(btn.getAttribute("data-pace"),10)===state.pace ? "true":"false");
-    });
-  }
+  var toastT; function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){toastEl.classList.remove("show");},1700); }
+  function openSheet(el){ el.classList.add("open"); } function closeSheet(el){ el.classList.remove("open"); }
+  document.querySelectorAll(".scrim").forEach(function(sc){ sc.addEventListener("click",function(e){ if(e.target===sc||e.target.hasAttribute("data-close")) closeSheet(sc); }); });
 
-  var toastT;
-  function toast(msg){ toastEl.textContent=msg; toastEl.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){toastEl.classList.remove("show");},1700); }
+  var editScrim=$("editScrim");
+  $("editBtn").addEventListener("click",function(){ PRAYER_IDS.forEach(function(p){ $("edit-"+p).value=state.targets[p]; }); $("setAllInput").value=""; openSheet(editScrim); });
+  $("setAllBtn").addEventListener("click",function(){ var v=parseInt($("setAllInput").value,10); if(isNaN(v)||v<0){ toast(T.tInvalidNum); return; } PRAYER_IDS.forEach(function(p){ $("edit-"+p).value=v; }); });
+  $("editSave").addEventListener("click",function(){ PRAYER_IDS.forEach(function(p){ var v=parseInt($("edit-"+p).value,10); if(isNaN(v)||v<0)v=0; state.targets[p]=v; if(state.done[p]>v) state.done[p]=v; }); render(); scheduleSave(); closeSheet(editScrim); toast(T.tSaved); });
 
-  function openSheet(el){ el.classList.add("open"); }
-  function closeSheet(el){ el.classList.remove("open"); }
-  document.querySelectorAll(".scrim").forEach(function(sc){
-    sc.addEventListener("click", function(e){ if(e.target===sc || e.target.hasAttribute("data-close")) closeSheet(sc); });
-  });
-
-  // edit sheet
-  var editScrim=$("editScrim"), editFields=$("editFields");
-  PRAYERS.forEach(function(p){
-    var row=document.createElement("div"); row.className="field";
-    row.innerHTML='<label><span class="fdot" style="background:'+p.a+'"></span>'+p.tr+(p.tag?' <span class="badge">'+p.tag+'</span>':'')+'</label><input type="number" inputmode="numeric" min="0" id="edit-'+p.id+'">';
-    editFields.appendChild(row);
-  });
-  $("editBtn").addEventListener("click", function(){
-    PRAYERS.forEach(function(p){ $("edit-"+p.id).value=state.targets[p.id]; });
-    $("setAllInput").value=""; openSheet(editScrim);
-  });
-  $("setAllBtn").addEventListener("click", function(){
-    var v=parseInt($("setAllInput").value,10);
-    if(isNaN(v)||v<0){ toast("Geçerli bir sayı gir"); return; }
-    PRAYERS.forEach(function(p){ $("edit-"+p.id).value=v; });
-  });
-  $("editSave").addEventListener("click", function(){
-    PRAYERS.forEach(function(p){
-      var v=parseInt($("edit-"+p.id).value,10); if(isNaN(v)||v<0) v=0;
-      state.targets[p.id]=v; if(state.done[p.id]>v) state.done[p.id]=v;
-    });
-    render(); scheduleSave(); closeSheet(editScrim); toast("Kaydedildi");
-  });
-
-  // backup sheet
   var backupScrim=$("backupScrim");
-  $("backupBtn").addEventListener("click", function(){ $("bkText").value=JSON.stringify(state); openSheet(backupScrim); });
-  $("bkCopy").addEventListener("click", function(){
-    var ta=$("bkText"); ta.select();
-    try{
-      if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){toast("Kopyalandı");}); }
-      else { document.execCommand("copy"); toast("Kopyalandı"); }
-    }catch(e){ try{document.execCommand("copy");}catch(_){} toast("Kopyalandı"); }
-  });
-  $("bkDownload").addEventListener("click", function(){
-    try{
-      var blob=new Blob([$("bkText").value],{type:"application/json"});
-      var url=URL.createObjectURL(blob); var a=document.createElement("a");
-      a.href=url; a.download="kaza-namazi-yedek-"+new Date().toISOString().slice(0,10)+".json";
-      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-      toast("Dosya indiriliyor");
-    }catch(e){ toast("İndirilemedi"); }
-  });
-  $("bkRestore").addEventListener("click", function(){
-    try{
-      var s=JSON.parse($("bkText").value);
-      if(!s||!s.targets||!s.done) throw 0;
-      state=merge(makeDefault(), s);
-      render(); syncPaceUI(); syncYearUI(); scheduleSave(); closeSheet(backupScrim); toast("Geri yüklendi");
-    }catch(e){ toast("Veri okunamadı"); }
-  });
+  $("backupBtn").addEventListener("click",function(){ $("bkText").value=JSON.stringify(state); openSheet(backupScrim); });
+  $("bkCopy").addEventListener("click",function(){ var ta=$("bkText"); ta.select(); try{ if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){toast(T.tCopied);}); } else { document.execCommand("copy"); toast(T.tCopied); } }catch(e){ try{document.execCommand("copy");}catch(_){} toast(T.tCopied); } });
+  $("bkDownload").addEventListener("click",function(){ try{ var blob=new Blob([$("bkText").value],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="kaza-namazi-yedek-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast(T.tDownloading); }catch(e){ toast(T.tDownloadFail); } });
+  $("bkRestore").addEventListener("click",function(){ try{ var s=JSON.parse($("bkText").value); if(!s||!s.targets||!s.done) throw 0; state=merge(makeDefault(),s); applyI18n(); syncPaceUI(); scheduleSave(); closeSheet(backupScrim); toast(T.tRestored); }catch(e){ toast(T.tReadFail); } });
 
-  // reset
-  $("resetBtn").addEventListener("click", function(){
-    if(confirm("Tüm ilerleme sıfırlanacak. Emin misin?\n(Önce yedek almak istersen Vazgeç.)")){
-      PRAYERS.forEach(function(p){ state.done[p.id]=0; });
-      render(); scheduleSave(); toast("Sıfırlandı");
-    }
-  });
+  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; }); render(); scheduleSave(); toast(T.tReset); } });
 
-  // ---- ana ekrana ekle butonu ----
-  var installBtn=$("installBtn"), installScrim=$("installScrim"), deferredPrompt=null;
-  function isStandalone(){ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }
-  function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
-  function showInstall(){ if(installBtn) installBtn.hidden = isStandalone(); }
-  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); deferredPrompt=e; showInstall(); });
-  window.addEventListener("appinstalled", function(){ deferredPrompt=null; if(installBtn) installBtn.hidden=true; toast("Ana ekrana eklendi"); });
-  function openInstallHelp(){
-    var ios=isIOS();
-    $("iosSteps").hidden=!ios; $("androidSteps").hidden=ios;
-    var ua=navigator.userAgent||"";
-    var inApp=/FBAN|FBAV|Instagram|Line\/|Twitter|WhatsApp|; wv\)/i.test(ua);
-    $("inappNote").hidden=!inApp;
-    openSheet(installScrim);
-  }
-  if(installBtn){
-    installBtn.addEventListener("click", function(){
-      if(deferredPrompt){
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(function(c){ deferredPrompt=null; if(c && c.outcome==="accepted" && installBtn) installBtn.hidden=true; });
-      }else{ openInstallHelp(); }
-    });
-  }
+  var installBtn=$("installBtn"),installScrim=$("installScrim"),deferredPrompt=null;
+  function isStandalone(){ return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true; }
+  function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); }
+  function showInstall(){ if(installBtn) installBtn.hidden=isStandalone(); }
+  window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); deferredPrompt=e; showInstall(); });
+  window.addEventListener("appinstalled",function(){ deferredPrompt=null; if(installBtn) installBtn.hidden=true; toast(T.tInstalled); });
+  function openInstallHelp(){ var ios=isIOS(); $("iosSteps").hidden=!ios; $("androidSteps").hidden=ios; var ua=navigator.userAgent||""; var inApp=/FBAN|FBAV|Instagram|Line\/|Twitter|WhatsApp|; wv\)/i.test(ua); $("inappNote").hidden=!inApp; openSheet(installScrim); }
+  if(installBtn){ installBtn.addEventListener("click",function(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(c){ deferredPrompt=null; if(c&&c.outcome==="accepted"&&installBtn) installBtn.hidden=true; }); } else { openInstallHelp(); } }); }
 
-  // ---- init ----
+  var hasCloud=(typeof window!=="undefined")&&window.storage&&typeof window.storage.get==="function";
+  function localMirror(){ try{ localStorage.setItem(LOCAL_KEY,JSON.stringify(state)); }catch(e){} }
+  function localOk(){ try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return true; }catch(e){ return false; } }
+  var cloudTimer=null;
+  function scheduleSave(){ localMirror(); setStatus("saving"); if(cloudTimer) clearTimeout(cloudTimer); cloudTimer=setTimeout(flushSave,450); }
+  function flushSave(){ if(cloudTimer){ clearTimeout(cloudTimer); cloudTimer=null; } if(hasCloud){ try{ Promise.resolve(window.storage.set(STORE_KEY,JSON.stringify(state))).then(function(){ setStatus("cloud"); }).catch(function(){ setStatus(localOk()?"local":"warn"); }); }catch(e){ setStatus(localOk()?"local":"warn"); } } else { setStatus(localOk()?"local":"warn"); } }
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") flushSave(); });
+  window.addEventListener("pagehide",flushSave);
+  function localLoad(base){ try{ var raw=localStorage.getItem(LOCAL_KEY); if(raw) return merge(base,JSON.parse(raw)); }catch(e){} return base; }
+  function loadState(){ var base=makeDefault(); return new Promise(function(resolve){ if(hasCloud){ try{ Promise.resolve(window.storage.get(STORE_KEY)).then(function(res){ resolve(res&&res.value?merge(base,JSON.parse(res.value)):localLoad(base)); }).catch(function(){ resolve(localLoad(base)); }); }catch(e){ resolve(localLoad(base)); } } else { resolve(localLoad(base)); } }); }
+
+  function ensurePersist(){ try{ if(navigator.storage&&navigator.storage.persist){ if(navigator.storage.persisted){ navigator.storage.persisted().then(function(p){ if(!p){ try{navigator.storage.persist();}catch(_){} } }).catch(function(){ try{navigator.storage.persist();}catch(_){} }); } else { try{navigator.storage.persist();}catch(_){} } } }catch(e){} }
+  ensurePersist();
+  window.addEventListener("pointerdown",ensurePersist,{once:true});
+
   setStatus("loading");
-  loadState().then(function(s){
-    state=s; render(); syncPaceUI(); syncYearUI(); showInstall();
-    setStatus(hasCloud ? "cloud" : (localOk()?"local":"warn"));
-  });
+  loadState().then(function(s){ state=s; applyI18n(); syncPaceUI(); showInstall(); setStatus(hasCloud?"cloud":(localOk()?"local":"warn")); });
 })();
 </script>
 </body>
