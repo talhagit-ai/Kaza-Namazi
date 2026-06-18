@@ -392,15 +392,15 @@
       var d=state.done[p],t=state.targets[p]; done+=d; tgt+=t;
       var rem=Math.max(0,t-d); if(rem>anyRem) anyRem=rem;
       var pc=t>0?Math.min(100,d/t*100):0;
-      var nw=$("now-"+p); if(nw) nw.textContent=fmt(rem);
+      var nw=$("now-"+p); if(nw) nw.textContent=fmt(d);
       var tg=$("tgt-"+p); if(tg) tg.textContent=fmt(t);
       var fl=$("fill-"+p); if(fl) fl.style.width=pc+"%";
       var note=$("note-"+p),card=$("card-"+p);
       var dec=card.querySelector('[data-act="dec"]'),inc=card.querySelector('[data-act="inc"]'),inc5=card.querySelector('[data-act="inc5"]');
       inc.disabled=false; inc5.disabled=false;
       if(rem<=0&&t>0){ note.innerHTML=T.completed; note.className="left-note complete"; card.classList.add("done"); }
-      else{ note.innerHTML=""; note.className="left-note"; card.classList.remove("done"); }
-      dec.disabled=rem<=0;
+      else{ note.innerHTML=tpl(T.remaining,{n:fmt(rem)}); note.className="left-note"; card.classList.remove("done"); }
+      dec.disabled=d<=0;
     });
     var remain=Math.max(0,tgt-done),pct=tgt>0?Math.round(done/tgt*100):0;
     remainBig.textContent=fmt(remain);
@@ -413,9 +413,9 @@
     else{ var days=Math.ceil(anyRem/state.pace); var dd=new Date(); dd.setDate(dd.getDate()+days); etaEl.textContent=tpl(T.etaTpl,{days:fmt(days),day:(days===1?T.dayU.one:T.dayU.other),date:fmtDate(dd)}); }
   }
 
-  function addDebt(id,n){ state.targets[id]=Math.max(0,(state.targets[id]||0)+n); if(state.done[id]>state.targets[id]) state.done[id]=state.targets[id]; syncPeriodFromCounts(); render(); scheduleSave(); }
-  function makeUp(id){ var t=state.targets[id]||0; state.done[id]=Math.min(t,(state.done[id]||0)+1); render(); scheduleSave(); }
-  cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")addDebt(id,1); else if(act==="inc5")addDebt(id,5); else if(act==="dec")makeUp(id); });
+  function addMadeUp(id,n){ state.done[id]=Math.max(0,(state.done[id]||0)+n); if(state.done[id]>(state.targets[id]||0)) state.targets[id]=state.done[id]; syncPeriodFromCounts(); render(); scheduleSave(); }
+  function undoMadeUp(id){ var dn=state.done[id]||0; if(dn<=0) return; state.done[id]=dn-1; render(); scheduleSave(); }
+  cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")addMadeUp(id,1); else if(act==="inc5")addMadeUp(id,5); else if(act==="dec")undoMadeUp(id); });
   dayBtn.addEventListener("click",function(){ var ch=false; PRAYER_IDS.forEach(function(p){ if(state.done[p]<state.targets[p]){ state.done[p]++; ch=true; } }); if(ch){ render(); scheduleSave(); toast(T.tDayAdded); } });
 
   function renderNotes(){ var ul=$("notesList"); if(!ul) return; ul.innerHTML=""; var arr=(state.notes||[]).slice().sort(function(a,b){return b.t-a.t;}); if(!arr.length){ var le=document.createElement("li"); le.className="notes-empty"; le.textContent=T.notesEmpty; ul.appendChild(le); return; } arr.forEach(function(n){ var li=document.createElement("li"); li.className="note-item"; var bd=document.createElement("div"); bd.className="note-body"; var dt=document.createElement("span"); dt.className="note-date"; dt.textContent=fmtDate(new Date(n.t)); var tx=document.createElement("span"); tx.className="note-text"; tx.textContent=n.x; bd.appendChild(dt); bd.appendChild(tx); var del=document.createElement("button"); del.type="button"; del.className="note-del"; del.setAttribute("data-del",String(n.t)); del.setAttribute("aria-label",T.notesDel||"Delete"); del.textContent="\u00D7"; li.appendChild(bd); li.appendChild(del); ul.appendChild(li); }); }
@@ -454,7 +454,7 @@
   $("bkDownload").addEventListener("click",function(){ try{ var blob=new Blob([$("bkText").value],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="kaza-namazi-yedek-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast(T.tDownloading); }catch(e){ toast(T.tDownloadFail); } });
   $("bkRestore").addEventListener("click",function(){ try{ var s=JSON.parse($("bkText").value); if(!s||!s.targets||!s.done) throw 0; state=merge(makeDefault(),s); applyI18n(); syncPaceUI(); scheduleSave(); closeSheet(backupScrim); toast(T.tRestored); }catch(e){ toast(T.tReadFail); } });
 
-  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; state.targets[p]=0; }); syncPeriodFromCounts(); render(); scheduleSave(); toast(T.tReset); } });
+  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; }); render(); scheduleSave(); toast(T.tReset); } });
 
   var installBtn=$("installBtn"),installScrim=$("installScrim"),deferredPrompt=null;
   function isStandalone(){ return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true; }
