@@ -216,7 +216,7 @@
       <div class="yb-sub" data-i18n="ybSub">Kaç yıllık namazı kaza ediyorsun?</div>
     </div>
     <div class="period">
-      <label class="period-f"><input type="number" id="inYears" inputmode="numeric" min="0" max="50" step="1" value="1"><span class="period-u" id="lbl-y">yıl</span></label>
+      <label class="period-f"><input type="number" id="inYears" inputmode="numeric" min="0" max="50" step="1" value="0"><span class="period-u" id="lbl-y">yıl</span></label>
       <div class="period-div"></div>
       <label class="period-f"><input type="number" id="inMonths" inputmode="numeric" min="0" max="11" step="1" value="0"><span class="period-u" id="lbl-m">ay</span></label>
       <div class="period-div"></div>
@@ -314,7 +314,7 @@
   if("serviceWorker" in navigator){ window.addEventListener("load",function(){ try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){} }); }
 
   var STORE_KEY="kazaState",LOCAL_KEY="kazaNamaziV2";
-  var DPY=365,DPM=365/12,DEFAULT_YEARS=1,MAX_YEARS=50,MAX_MONTHS=11,MAX_DAYS=31;
+  var DPY=365,DPM=365/12,DEFAULT_YEARS=0,MAX_YEARS=50,MAX_MONTHS=11,MAX_DAYS=31;
   var PRAYER_IDS=["sabah","ogle","ikindi","aksam","yatsi","vitir"];
   var ACCENT={sabah:"#EBB98C",ogle:"#F4CF5A",ikindi:"#E69240",aksam:"#D2654A",yatsi:"#7C8FC9",vitir:"#A78BD0"};
   var ARABIC={sabah:"الفجر",ogle:"الظهر",ikindi:"العصر",aksam:"المغرب",yatsi:"العشاء",vitir:"الوتر"};
