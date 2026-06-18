@@ -27,6 +27,8 @@
     --arabic:'Noto Naskh Arabic','Geeza Pro',serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{touch-action:manipulation}
+  button,input{touch-action:manipulation}
   html,body{margin:0}
   html[dir="rtl"] body{font-family:var(--arabic)}
   html[dir="rtl"] h1,html[dir="rtl"] .sheet h2,html[dir="rtl"] .names .tr{font-family:var(--arabic)}
@@ -414,9 +416,9 @@
   }
 
   function addMadeUp(id,n){ state.done[id]=Math.max(0,(state.done[id]||0)+n); if(state.done[id]>(state.targets[id]||0)) state.targets[id]=state.done[id]; syncPeriodFromCounts(); render(); scheduleSave(); }
-  function undoMadeUp(id){ var dn=state.done[id]||0; if(dn<=0) return; state.done[id]=dn-1; render(); scheduleSave(); }
+  function undoMadeUp(id){ var dn=state.done[id]||0; if(dn<=0) return; state.done[id]=dn-1; syncPeriodFromCounts(); render(); scheduleSave(); }
   cardsEl.addEventListener("click",function(e){ var b=e.target.closest("button[data-act]"); if(!b) return; var id=b.getAttribute("data-id"),act=b.getAttribute("data-act"); if(act==="inc")addMadeUp(id,1); else if(act==="inc5")addMadeUp(id,5); else if(act==="dec")undoMadeUp(id); });
-  dayBtn.addEventListener("click",function(){ var ch=false; PRAYER_IDS.forEach(function(p){ if(state.done[p]<state.targets[p]){ state.done[p]++; ch=true; } }); if(ch){ render(); scheduleSave(); toast(T.tDayAdded); } });
+  dayBtn.addEventListener("click",function(){ var ch=false; PRAYER_IDS.forEach(function(p){ if(state.done[p]<state.targets[p]){ state.done[p]++; ch=true; } }); if(ch){ syncPeriodFromCounts(); render(); scheduleSave(); toast(T.tDayAdded); } });
 
   function renderNotes(){ var ul=$("notesList"); if(!ul) return; ul.innerHTML=""; var arr=(state.notes||[]).slice().sort(function(a,b){return b.t-a.t;}); if(!arr.length){ var le=document.createElement("li"); le.className="notes-empty"; le.textContent=T.notesEmpty; ul.appendChild(le); return; } arr.forEach(function(n){ var li=document.createElement("li"); li.className="note-item"; var bd=document.createElement("div"); bd.className="note-body"; var dt=document.createElement("span"); dt.className="note-date"; dt.textContent=fmtDate(new Date(n.t)); var tx=document.createElement("span"); tx.className="note-text"; tx.textContent=n.x; bd.appendChild(dt); bd.appendChild(tx); var del=document.createElement("button"); del.type="button"; del.className="note-del"; del.setAttribute("data-del",String(n.t)); del.setAttribute("aria-label",T.notesDel||"Delete"); del.textContent="\u00D7"; li.appendChild(bd); li.appendChild(del); ul.appendChild(li); }); }
   function addNote(){ var inp=$("noteInput"); if(!inp) return; var v=(inp.value||"").trim(); if(!v) return; state.notes=state.notes||[]; state.notes.push({t:Date.now(),x:v.slice(0,200)}); inp.value=""; renderNotes(); scheduleSave(); toast(T.tNoteAdded); }
@@ -427,9 +429,9 @@
   document.querySelectorAll(".pace .seg button").forEach(function(btn){ btn.addEventListener("click",function(){ document.querySelectorAll(".pace .seg button").forEach(function(x){x.setAttribute("aria-pressed","false");}); btn.setAttribute("aria-pressed","true"); state.pace=parseInt(btn.getAttribute("data-pace"),10); render(); scheduleSave(); }); });
   function syncPaceUI(){ document.querySelectorAll(".pace .seg button").forEach(function(btn){ btn.setAttribute("aria-pressed",parseInt(btn.getAttribute("data-pace"),10)===state.pace?"true":"false"); }); }
 
-  function applyPeriod(){ var y=clampN(inYears.value,0,MAX_YEARS),m=clampN(inMonths.value,0,MAX_MONTHS),d=clampN(inDays.value,0,MAX_DAYS); state.years=y; state.months=m; state.days=d; inYears.value=y; inMonths.value=m; inDays.value=d; var tot=periodTotal(y,m,d); PRAYER_IDS.forEach(function(p){ state.targets[p]=tot; if(state.done[p]>tot) state.done[p]=tot; }); render(); scheduleSave(); toast(tpl(T.tYearSet,{period:periodLabel(y,m,d),n:fmt(tot)})); }
+  function applyPeriod(){ var y=clampN(inYears.value,0,MAX_YEARS),m=clampN(inMonths.value,0,MAX_MONTHS),d=clampN(inDays.value,0,MAX_DAYS); state.years=y; state.months=m; state.days=d; inYears.value=y; inMonths.value=m; inDays.value=d; var tot=periodTotal(y,m,d); PRAYER_IDS.forEach(function(p){ state.targets[p]=tot; state.done[p]=0; }); render(); scheduleSave(); toast(tpl(T.tYearSet,{period:periodLabel(y,m,d),n:fmt(tot)})); }
   [inYears,inMonths,inDays].forEach(function(el){ if(el) el.addEventListener("change",applyPeriod); });
-  function syncPeriodFromCounts(){ var mx=0,i; for(i=0;i<PRAYER_IDS.length;i++){ var tt=state.targets[PRAYER_IDS[i]]||0; if(tt>mx) mx=tt; } var y=Math.floor(mx/DPY); var r=mx-y*DPY; var m=Math.floor(r/DPM); var dd=Math.round(r-m*DPM); y=clampN(y,0,MAX_YEARS); m=clampN(m,0,MAX_MONTHS); dd=clampN(dd,0,MAX_DAYS); state.years=y; state.months=m; state.days=dd; if(inYears) inYears.value=y; if(inMonths) inMonths.value=m; if(inDays) inDays.value=dd; }
+  function syncPeriodFromCounts(){ var mx=0,i; for(i=0;i<PRAYER_IDS.length;i++){ var tt=Math.max(0,(state.targets[PRAYER_IDS[i]]||0)-(state.done[PRAYER_IDS[i]]||0)); if(tt>mx) mx=tt; } var y=Math.floor(mx/DPY); var r=mx-y*DPY; var m=Math.floor(r/DPM); var dd=Math.round(r-m*DPM); y=clampN(y,0,MAX_YEARS); m=clampN(m,0,MAX_MONTHS); dd=clampN(dd,0,MAX_DAYS); state.years=y; state.months=m; state.days=dd; if(inYears) inYears.value=y; if(inMonths) inMonths.value=m; if(inDays) inDays.value=dd; }
   langSel.addEventListener("change",function(){ var l=langSel.value; if(I18N[l]){ state.lang=l; applyI18n(); scheduleSave(); } });
   var themeBtn=$("themeBtn");
   function applyTheme(){ document.documentElement.setAttribute("data-theme", state.theme==="dark"?"dark":"light"); }
@@ -454,7 +456,7 @@
   $("bkDownload").addEventListener("click",function(){ try{ var blob=new Blob([$("bkText").value],{type:"application/json"}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download="kaza-namazi-yedek-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast(T.tDownloading); }catch(e){ toast(T.tDownloadFail); } });
   $("bkRestore").addEventListener("click",function(){ try{ var s=JSON.parse($("bkText").value); if(!s||!s.targets||!s.done) throw 0; state=merge(makeDefault(),s); applyI18n(); syncPaceUI(); scheduleSave(); closeSheet(backupScrim); toast(T.tRestored); }catch(e){ toast(T.tReadFail); } });
 
-  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; }); render(); scheduleSave(); toast(T.tReset); } });
+  $("resetBtn").addEventListener("click",function(){ if(confirm(T.resetConfirm)){ PRAYER_IDS.forEach(function(p){ state.done[p]=0; }); syncPeriodFromCounts(); render(); scheduleSave(); toast(T.tReset); } });
 
   var installBtn=$("installBtn"),installScrim=$("installScrim"),deferredPrompt=null;
   function isStandalone(){ return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true; }
