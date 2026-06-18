@@ -431,6 +431,9 @@
 
   function applyPeriod(){ var y=clampN(inYears.value,0,MAX_YEARS),m=clampN(inMonths.value,0,MAX_MONTHS),d=clampN(inDays.value,0,MAX_DAYS); state.years=y; state.months=m; state.days=d; inYears.value=y; inMonths.value=m; inDays.value=d; var tot=periodTotal(y,m,d); PRAYER_IDS.forEach(function(p){ state.targets[p]=tot; state.done[p]=0; }); render(); scheduleSave(); toast(tpl(T.tYearSet,{period:periodLabel(y,m,d),n:fmt(tot)})); }
   [inYears,inMonths,inDays].forEach(function(el){ if(el) el.addEventListener("change",applyPeriod); });
+  function selectOnFocus(el){ if(!el) return; el.addEventListener("focus",function(){ var s=this; try{s.select();}catch(e){} setTimeout(function(){ try{s.select();}catch(e){} },0); }); }
+  [inYears,inMonths,inDays,$("setAllInput")].forEach(selectOnFocus);
+  document.querySelectorAll('input[id^="edit-"]').forEach(selectOnFocus);
   function syncPeriodFromCounts(){ var mx=0,i; for(i=0;i<PRAYER_IDS.length;i++){ var tt=Math.max(0,(state.targets[PRAYER_IDS[i]]||0)-(state.done[PRAYER_IDS[i]]||0)); if(tt>mx) mx=tt; } var y=Math.floor(mx/DPY); var r=mx-y*DPY; var m=Math.floor(r/DPM); var dd=Math.round(r-m*DPM); y=clampN(y,0,MAX_YEARS); m=clampN(m,0,MAX_MONTHS); dd=clampN(dd,0,MAX_DAYS); state.years=y; state.months=m; state.days=dd; if(inYears) inYears.value=y; if(inMonths) inMonths.value=m; if(inDays) inDays.value=dd; }
   langSel.addEventListener("change",function(){ var l=langSel.value; if(I18N[l]){ state.lang=l; applyI18n(); scheduleSave(); } });
   var themeBtn=$("themeBtn");
